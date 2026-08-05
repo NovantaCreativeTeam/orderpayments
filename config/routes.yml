@@ -1,0 +1,7 @@
+_admin_order_payments:
+  resource: "routes/order_payment.yml"
+  prefix: /order
+
+_admin_order_invoices:
+  resource: "routes/order_invoice.yml"
+  prefix: /order

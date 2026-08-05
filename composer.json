@@ -1,0 +1,17 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Novanta\\OrderPayment\\": "src/"
+        }
+    },
+    "config": {
+        "prepend-autoloader": false
+    },
+    "author": "PrestaShop", 
+    "license": "AFL-3.0",
+    "require-dev": {
+        "prestashop/php-dev-tools": "^5.0",
+        "friendsofphp/php-cs-fixer": "^3.58",
+        "phpstan/phpstan": "^1.11"
+    }
+}

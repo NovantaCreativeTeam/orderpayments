@@ -1,0 +1,64 @@
+order_payment_index:
+  path: /payments
+  methods: [GET]
+  defaults:
+    _controller: OrderPayment\Controller\Admin\OrderPaymentController::indexAction
+    _legacy_controller: AdminOrderPayments
+    _legacy_link: AdminOrderPayments
+
+# ====== Order Payment API
+
+order_payment_get_all:
+  path: /{orderId}/payment
+  methods: [GET]
+  defaults:
+    _controller: OrderPayment\Controller\Admin\OrderPaymentController::getAllAction
+  options:
+    expose: true
+
+order_payment_list:
+  path: /{orderId}/payment
+  methods: [GET]
+  defaults:
+    _controller: OrderPayment\Controller\Admin\OrderPaymentController::getAllAction
+  options:
+    expose: true
+
+order_payment_add:
+  path: /{orderId}/payment
+  methods: [POST]
+  defaults:
+    _controller: OrderPayment\Controller\Admin\OrderPaymentController::addAction
+  options:
+    expose: true
+
+order_payment_edit:
+  path: /payment/{paymentId}
+  methods: [POST]
+  defaults:
+    _controller: OrderPayment\Controller\Admin\OrderPaymentController::editAction
+  requirements:
+    paymentId: \d+
+  options:
+    expose: true
+
+order_payment_delete:
+  path: /{orderId}/payment/{paymentId}
+  methods: [DELETE]
+  defaults:
+    _controller: OrderPayment\Controller\Admin\OrderPaymentController::deleteAction
+  requirements:
+    paymentId: \d+
+    orderId: \d+
+  options:
+    expose: true
+
+order_payment_download:
+  path: /{orderId}/payment/{paymentId}/download
+  methods: [GET]
+  defaults:
+    _controller: OrderPayment\Controller\Admin\OrderPaymentController::downloadAction
+  requirements:
+    paymentId: \d+
+  options:
+    expose: true

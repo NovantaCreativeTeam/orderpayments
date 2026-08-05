@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    public: true
+
+  Novanta\OrderPayment\Controller\Admin\OrderPaymentController:
+    autowire: true
+    autoconfigure: true
