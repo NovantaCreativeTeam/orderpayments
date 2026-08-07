@@ -1,44 +1,43 @@
 <template>
-  <ValidationProvider ref="provider" :rules="validationRules" :vid="id" :name="name ?? label"
-                      v-slot="{ errors, passed, failed, validate }">
+  <Field :rules="validationRules" :name="name ?? label" v-model="internalValue" v-slot="{ errors, meta }">
     <div class="form-group"
-         :class="{'row': horizontal, 'has-success': passed && validationRules != null, 'has-danger': failed}">
+         :class="{'row': horizontal, 'has-success': meta.valid && validationRules != null, 'has-danger': meta.touched && !meta.valid}">
       <label class="form-control-label" :for="id" :class="{'col-sm-3': horizontal}">{{ label }}</label>
       <div :class="{ 'col-sm-9': horizontal }">
         <div class="tags-input search-input search d-flex flex-wrap" @click="focus()" :class="{
-                            'is-valid': passed && validationRules != null,
-                            'is-invalid': failed
+                            'is-valid': meta.valid && validationRules != null,
+                            'is-invalid': meta.touched && !meta.valid
                         }">
           <div class="tags-wrapper">
-            <span v-for="(tag, index) in value" :key="index" class="tag">{{ tag }}<i class="material-icons"
+            <span v-for="(tag, index) in internalValue" :key="index" class="tag">{{ tag }}<i class="material-icons"
                                                                                      @click="close(index)">close</i></span>
           </div>
           <input ref="tags" type="text" :id="id" class="form-control input" :disabled="disabled"
-                 @input="validate($event)"
-                 @keydown.enter="passed && add($event.currentTarget.value)"
+                 @input="meta.validate"
+                 @keydown.enter="meta.valid && add($event.currentTarget.value)"
                  @keydown.delete.stop="remove()"
                  @focusout="focusOut($event.currentTarget.value)"
           />
         </div>
         <small class="form-text" v-if="helper">{{ helper }}</small>
-        <div class="invalid-feedback" v-show="errors.length && failed">
+        <div class="invalid-feedback" v-show="errors.length && meta.touched && !meta.valid">
           <span v-for="error in errors" :key="error">{{ error }}</span>
         </div>
       </div>
     </div>
-  </ValidationProvider>
+  </Field>
 </template>
 
 <script>
-import {ValidationProvider, validate} from 'vee-validate';
+import { Field } from 'vee-validate';
 
 export default {
   props: {
     id: String,
     name: String,
-    value: String | Array,
+    modelValue: [String, Array],
     validationRules: {
-      type: String | Object,
+      type: [String, Object],
       required: false
     },
     label: {
@@ -57,7 +56,16 @@ export default {
   },
   data() {
     return {
-      tag: null
+      tag: null,
+      internalValue: this.modelValue || []
+    }
+  },
+  watch: {
+    modelValue(newVal) {
+      this.internalValue = newVal || [];
+    },
+    internalValue(newVal) {
+      this.$emit('update:modelValue', newVal);
     }
   },
   methods: {
@@ -68,42 +76,31 @@ export default {
       this.$refs.tags.value = ''
     },
     add(tag) {
-      var tags = this.value
-      tags.push(tag.trim());
+      this.internalValue.push(tag.trim());
       this.reset();
-      this.$emit('input', tags);
       this.$emit('add', tag)
     },
     close(index) {
-      var tags = this.value
-      var removedTag = tags[index]
-      tags.splice(index, 1)
-      validate(tags, 'required').then((result) => {
-        this.$refs.provider.setErrors(result.errors)
-      })
-      this.$emit('input', tags)
+      var removedTag = this.internalValue[index]
+      this.internalValue.splice(index, 1)
       this.$emit('remove', removedTag)
     },
     remove() {
-      if (this.value.length && this.tag && !this.tag.length) {
-        var tags = this.value
-        var removedTag = tags.pop();
-        this.$emit('input', tags);
+      if (this.internalValue.length && this.tag && !this.tag.length) {
+        var removedTag = this.internalValue.pop();
         this.$emit('remove', removedTag);
       }
     },
     focusOut(tag) {
       if (tag != null && tag !== "") {
-        var tags = this.value
-        tags.push(tag.trim());
+        this.internalValue.push(tag.trim());
         this.reset();
-        this.$emit('input', tags);
         this.$emit('add', tag)
       }
     }
   },
   components: {
-    ValidationProvider
+    Field
   }
 };
 </script>

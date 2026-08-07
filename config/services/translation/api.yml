@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    public: true
+
+  prestashop.translation.api.orderpayment:
+    class: Novanta\OrderPayment\Translation\Api\OrderPaymentApi
+    parent: prestashop.translation.api
+    public: true

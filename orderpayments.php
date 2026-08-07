@@ -25,6 +25,7 @@
  */
 
 use Novanta\OrderPayment\Adapter\Install\InstallerFactory;
+use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -79,18 +80,23 @@ class OrderPayments extends \Module
 
         $this->context->smarty->assign([
             'orderId' => $orderId,
+            'paymentsTitle' => $this->trans('Payments', [], 'Modules.Orderpayments.Admin'),
+            'invoicesTitle' => $this->trans('Invoices', [], 'Modules.Orderpayments.Admin'),
         ]);
 
-        return $this->display(__FILE__, 'views/templates/admin/order_main_bottom.tpl');
+        return $this->display(__FILE__, 'views/templates/hook//order_main_bottom.tpl');
     }
 
     public function hookActionAdminControllerSetMedia()
     {
-        if ($this->context->controller->controller_name === 'AdminOrders') {
-            $this->context->controller->addJS($this->_path.'views/js/order-payment.js');
-            if (file_exists($this->local_path.'views/css/order-payment.css')) {
-                $this->context->controller->addCSS($this->_path.'views/css/order-payment.css');
-            }
+        if ('AdminOrders' === Tools::getValue('controller')) {
+            $this->context->controller->addJS(_MODULE_DIR_ . $this->name . '/views/js/order.payments.js');
+            $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/order.payments.css');
+
+            Media::addJsDef([
+                'id_order' => Tools::getValue('id_order'),
+                'orderPaymentsTranslationUrl' => SymfonyContainer::getInstance()->get('router')->generate('api_i18n_translations_list', ['page' => 'orderpayment']),
+            ]);
         }
     }
 

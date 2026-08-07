@@ -108,7 +108,6 @@ class Installer
             'displayAdminOrderMainBottom',
             'actionOrderGridDefinitionModifier',
             'actionOrderGridQueryBuilderModifier',
-            'actionOrderGridDataModifier',
             'actionAdminControllerSetMedia',
         ];
 
@@ -133,7 +132,6 @@ class Installer
      */
     protected function destroyConfiguration(): bool
     {
-        // Do not destroy anything
         return true;
     }
 
@@ -150,11 +148,17 @@ class Installer
         $paymentsTab = $this->addTab('Payments', 'AdminOrderPayments', 'AdminParentOrders', $module);
 
         $invoicesTabId = SymfonyContainer::getInstance()->get('prestashop.core.admin.tab.repository')->findOneIdByClassName('AdminInvoices');
-        $invoicesTab = new Tab($invoicesTabId);
-        $invoicesTab->class_name = 'AdminOrderInvoices';
-        $invoicesTab->module = $module->name;
 
-        return $paymentsTab && $invoicesTab->save();
+        $updateTabResults = true;
+        if($invoicesTabId) {
+            $invoicesTab = new Tab($invoicesTabId);
+            $invoicesTab->class_name = 'AdminOrderInvoices';
+            $invoicesTab->module = $module->name;
+            $updateTabResults = $invoicesTab->save();
+        }
+
+
+        return $paymentsTab && $updateTabResults;
     }
 
     /**

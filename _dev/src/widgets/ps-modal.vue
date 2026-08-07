@@ -24,7 +24,8 @@
  *-->
 <template>
   <div class="modal fade" id="ps-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" :class="{'modal-lg': size === 'lg', 'modal-sm': size === 'sm', 'modal-xl': size === 'xl'}" role="document">
+    <div class="modal-dialog" :class="{'modal-lg': size === 'lg', 'modal-sm': size === 'sm', 'modal-xl': size === 'xl'}"
+         role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">
@@ -37,25 +38,28 @@
         <div class="modal-body">
           <slot/>
         </div>
-        <div class="modal-footer" v-if="translations.button_save || translations.button_leave">
-          <PSButton
-            @click.native="onLeave"
-            class="btn-lg"
-            ghost
-            data-dismiss="modal"
-            v-if="translations.button_leave"
-          >
-            {{ translations.button_leave }}
-          </PSButton>
-          <PSButton
-              @click.native="onSave"
-              class="btn-lg"
-              primary
-              data-dismiss="modal"
-              v-if="translations.button_save"
-          >
-            {{ translations.button_save }}
-          </PSButton>
+        <div class="modal-footer">
+          <PsSpinner v-show="isLoading"/>
+          <div class="actions" v-if="translations.button_save || translations.button_leave">
+            <PSButton
+                @click.native="onLeave"
+                class="btn-lg"
+                ghost
+                data-dismiss="modal"
+                v-if="translations.button_leave"
+            >
+              {{ translations.button_leave }}
+            </PSButton>
+            <PSButton
+                @click.native="onSave"
+                class="btn-lg"
+                primary
+                data-dismiss="modal"
+                v-if="translations.button_save"
+            >
+              {{ translations.button_save }}
+            </PSButton>
+          </div>
         </div>
       </div>
     </div>
@@ -65,6 +69,7 @@
 <script>
 import PSButton from "./ps-button.vue";
 import {EventBus} from "../utils/event-bus";
+import PsSpinner from "./ps-spinner.vue";
 
 export default {
   props: {
@@ -77,13 +82,18 @@ export default {
       type: String,
       required: false,
       default: null,
-    }
+    },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   mounted() {
-    EventBus.$on("showModal", () => {
+    EventBus.on("showModal", () => {
       this.showModal();
     });
-    EventBus.$on("hideModal", () => {
+    EventBus.on("hideModal", () => {
       this.hideModal();
     });
   },
@@ -102,6 +112,7 @@ export default {
     },
   },
   components: {
+    PsSpinner,
     PSButton,
   },
 };
@@ -116,8 +127,11 @@ export default {
     color: $gray-medium
     opacity: 1
 
-.modal-content
-  border-radius: 0
-  padding-bottom: 1.25rem
-
+.modal-footer
+  .ps-spinner
+    margin: 0
+  .actions
+    display: flex
+    align-items: center
+    margin-left: auto
 </style>

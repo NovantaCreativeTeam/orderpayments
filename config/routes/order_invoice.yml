@@ -2,7 +2,7 @@ order_invoice_index:
   path: /invoices
   methods: [GET]
   defaults:
-    _controller: OrderPayment\Controller\Admin\OrderInvoiceController::indexAction
+    _controller: Novanta\OrderPayment\Controller\Admin\OrderInvoiceController::indexAction
     _legacy_controller: AdminOrderInvoices
     _legacy_link: AdminOrderInvoices
 
@@ -12,4 +12,4 @@ order_invoice_get_all:
   path: /
   methods: [GET]
   defaults:
-    _controller: OrderPayment\Controller\Admin\OrderInvoiceController::getAllAction
+    _controller: Novanta\OrderPayment\Controller\Admin\OrderInvoiceController::getAllAction

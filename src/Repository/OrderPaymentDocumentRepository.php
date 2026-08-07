@@ -24,7 +24,7 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace OrderPayment\Repository;
+namespace Novanta\OrderPayment\Repository;
 
 use Doctrine\ORM\EntityRepository;
 

@@ -1,13 +1,13 @@
 <template>
-    <ValidationProvider :rules="validationRules" :vid="id" :name="name ?? label" v-slot="{ errors, passed, failed }">
-        <div class="form-group" :class="{'row': horizontal, 'has-success': passed && validationRules != null, 'has-danger': failed}">
+  <Field :rules="validationRules" :name="name ?? label" v-model="dateValue" v-slot="{ errors, meta }">
+        <div class="form-group" :class="{'row': horizontal, 'has-success': meta.valid && validationRules != null, 'has-danger': meta.touched && !meta.valid}">
             <label v-if="label" class="form-control-label" :for="id" :class="{'col-sm-3': horizontal}">{{label}}</label>
             <div :class="{ 'col-sm-9': horizontal }">
                 <div class="input-group date">
                     <input type="text" ref="datepicker" class="form-control" :disabled="disabled" :id="id" v-model="dateValue"
                         :class="{
-                            'is-valid': passed && validationRules != null,
-                            'is-invalid': failed,
+                            'is-valid': meta.valid && validationRules != null,
+                            'is-invalid': meta.touched && !meta.valid,
                         }"/>
                     <div class="input-group-append">
                         <span class="input-group-text">
@@ -17,16 +17,16 @@
                 </div>
 
                 <small class="form-text" v-if="helper">{{ helper }}</small>
-                <div class="invalid-feedback" v-show="errors.length && failed">
+                <div class="invalid-feedback" v-show="errors.length && meta.touched && !meta.valid">
                     <span v-for="error in errors" :key="error">{{error}}</span>
                 </div>
             </div>
         </div>
-    </ValidationProvider>
+    </Field>
 </template>
 
 <script>
-import { ValidationProvider, validate } from "vee-validate";
+import { Field } from "vee-validate";
 import moment from 'moment'
 import 'moment/min/locales'
 
@@ -34,13 +34,13 @@ export default {
     props: {
         id: String,
         name: String,
-        value: String | Number,
+        modelValue: [String, Number],
         disabled: {
             type: Boolean,
             default: false,
         },
         validationRules: {
-            type: String | Object,
+            type: [String, Object],
             required: false,
         },
         label: {
@@ -54,7 +54,7 @@ export default {
         },
     },
     data() {
-        let date = this.value;
+        let date = this.modelValue;
         // Se il valore è una stringa, proviamo a interpretarla come ISO o Date string standard
         // moment(undefined) o moment(null) ritorna un Invalid Date object (non letteralmente null)
         let initialDate = date ? moment(date) : null;
@@ -64,7 +64,7 @@ export default {
         }
     },
     watch: {
-        value(newVal) {
+        modelValue(newVal) {
             let initialDate = newVal ? moment(newVal) : null;
             if (initialDate && initialDate.isValid()) {
                 let formatted = initialDate.format('DD/MM/YYYY');
@@ -88,13 +88,12 @@ export default {
             if(this.dateValue != current_date)
             {
                 this.dateValue = current_date
-                validate(this.dateValue)
-                this.$emit('input', current_date)
+                this.$emit('update:modelValue', current_date)
             }
         });
     },
     components: {
-        ValidationProvider
+        Field
     }
 };
 </script>

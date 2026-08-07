@@ -1,10 +1,12 @@
 import {createStore} from 'vuex'
 import orderPaymentApi from "../services/orderPayment.api";
 import i18nApi from "../services/i18n.api";
+import EventBus from "../utils/event-bus";
 
 const state = {
     invoices: [],
     payments: [],
+    summary: [],
     translations: []
 }
 
@@ -14,28 +16,59 @@ const getters = {
     },
     payments(state) {
         return state.payments
+    },
+    summary(state) {
+        return state.summary
     }
 }
 const mutations = {
     setTranslations(state, translations) {
         state.translations = translations
+    },
+    setPayments(state, payments) {
+        state.payments = payments
+    },
+    setSummary(state, summary) {
+        state.summary = summary
+    },
+    setInvoices(state, invoices) {
+        state.invoices = invoices
     }
 }
 const actions = {
     initialize({state, commit, dispatch}) {
-        state.invoices = []
-        state.payments = []
-        dispatch('getTranslations')
+        Promise.all([
+            dispatch('loadPayments'),
+            dispatch('loadInvoices'),
+            dispatch('loadTranslations'),
+        ]).then(() => {
+            EventBus.emit('order-payments-initialized')
+        })
     },
-    getOrderInvoices({state}) {
-        return state.invoices = []
+    loadInvoices({state, commit}) {
+        commit('setInvoices', [])
     },
-    getOrderPayments({state}) {
-        return orderPaymentApi.getAll(orderId).then(response => state.payments = response.data)
+    loadPayments({state, commit}) {
+        return orderPaymentApi.getAll(id_order).then(response => {
+            commit('setPayments', response.payments)
+            commit('setSummary', {
+                currencyIsoCode: response.currencyIsoCode,
+                currencySymbol: response.currencySymbol,
+                remaining: response.remaining,
+                totalOrder: response.totalOrder,
+                totalPaid: response.totalPaid,
+            })
+        })
     },
-    getTranslations({state, commit}) {
+    loadTranslations({state, commit}) {
         return i18nApi.getTranslations().then(response => {
-            commit('setTranslations', response.data)
+
+            let translations = [];
+            response.data.data.forEach((t) => {
+                translations[t.translation_id] = t.name;
+            });
+
+            commit('setTranslations', translations)
         })
     }
 }

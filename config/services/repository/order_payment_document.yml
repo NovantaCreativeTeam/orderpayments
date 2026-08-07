@@ -1,6 +1,6 @@
 services:
-  OrderPayment\Repository\OrderPaymentDocumentRepository:
-    class: OrderPayment\Repository\OrderPaymentDocumentRepository
+  Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository:
+    class: Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository
     factory: ['@doctrine.orm.default_entity_manager', getRepository]
     arguments:
-      - OrderPayment\Entity\OrderPaymentDocument
+      - Novanta\OrderPayment\Entity\OrderPaymentDocument

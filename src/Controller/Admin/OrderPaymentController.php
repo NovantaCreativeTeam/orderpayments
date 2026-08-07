@@ -24,18 +24,22 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace OrderPayment\Controller\Admin;
+namespace Novanta\OrderPayment\Controller\Admin;
 
+use Novanta\OrderPayment\Domain\OrderPayment\Command\AddOrderPaymentCommand;
+use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
+use Novanta\OrderPayment\Domain\OrderPayment\Query\GetOrderPayments;
+use Novanta\OrderPayment\Domain\OrderPayment\QueryResult\OrderPaymentForViewing;
+use Novanta\OrderPayment\Domain\OrderPayment\Command\EditOrderPayment;
+use Novanta\OrderPayment\Domain\OrderPayment\Command\DeleteOrderPayment;
+use PrestaShop\PrestaShop\Core\Domain\Order\Payment\Command\AddPaymentCommand;
 use PrestaShopBundle\Controller\Admin\PrestaShopAdminController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use PrestaShop\PrestaShop\Core\Domain\Order\QueryResult\OrderPayment as OrderPaymentResult;
-use OrderPayment\Entity\OrderPaymentDocument;
-use OrderPayment\Repository\OrderPaymentDocumentRepository;
+use Novanta\OrderPayment\Entity\OrderPaymentDocument;
 use Order;
-use DateTime;
-use Tools;
 use Db;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -47,109 +51,71 @@ class OrderPaymentController extends PrestaShopAdminController
         return 'OrderPaymentController - index Action';
     }
 
-    public function getAllAction(int $orderId)
+    /**
+     * Function to retrieve all payments for an order
+     * @param int $orderId
+     * @return JsonResponse
+     */
+    public function getAllAction(int $orderId): JsonResponse
     {
-        $order = new Order($orderId);
-        if (!\Validate::isLoadedObject($order)) {
-            return new JsonResponse(['error' => 'Order not found'], 404);
+        try {
+            $order = new Order($orderId);
+            if (!\Validate::isLoadedObject($order)) {
+                return new JsonResponse(['error' => 'Order not found'], 404);
+            }
+
+            /** @var OrderPaymentForViewing[] $orderPayments */
+            $orderPayments = $this->dispatchQuery(new GetOrderPayments($orderId));
+
+            $totalPaid = 0;
+            foreach ($orderPayments as $payment) {
+                $totalPaid += $payment->getAmount();
+            }
+
+            $totalOrder = $order->total_products_wt + $order->total_shipping_tax_incl + $order->total_wrapping_tax_incl - $order->total_discounts_tax_incl;
+            $remaining = $totalOrder - $totalPaid;
+
+            return $this->json([
+                'payments' => $orderPayments,
+                'totalOrder' => (float)$totalOrder,
+                'totalPaid' => (float)$totalPaid,
+                'remaining' => (float)$remaining,
+                'currencySymbol' => $this->getCurrencyContext()->getSymbol(),
+                'currencyIsoCode' => $this->getCurrencyContext()->getIsoCode(),
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json(['message' => $this->getErrorMessageForException($e, $this->getErrorMessages($e))], $this->getHttpErrorCode($e));
         }
-
-        $payments = $order->getOrderPaymentCollection();
-        $paymentsData = [];
-        $totalPaid = 0;
-
-        /** @var OrderPaymentDocumentRepository $repository */
-        $repository = $this->get('OrderPayment\Repository\OrderPaymentDocumentRepository');
-
-        foreach ($payments as $payment) {
-            $totalPaid += $payment->amount;
-            $doc = $repository->findOneBy(['orderPaymentId' => $payment->id]);
-            
-            $paymentsData[] = [
-                'id' => $payment->id,
-                'amount' => $payment->amount,
-                'date' => $payment->date_add,
-                'method' => $payment->payment_method,
-                'transaction_id' => $payment->transaction_id,
-                'id_order_invoice' => $payment->id_order_invoice,
-                'document' => $doc ? $doc->getOriginalFilename() : null,
-                'document_id' => $doc ? $doc->getOrderPaymentId() : null,
-            ];
-        }
-
-        $totalOrder = $order->getTotalPaid();
-        $remaining = $totalOrder - $totalPaid;
-
-        return new JsonResponse([
-            'payments' => $paymentsData,
-            'totalOrder' => (float)$totalOrder,
-            'totalPaid' => (float)$totalPaid,
-            'remaining' => (float)$remaining,
-            'currencySymbol' => $this->getContext()->currency->symbol,
-            'invoices' => array_map(function($invoice) {
-                return [
-                    'id' => $invoice->id,
-                    'number' => $invoice->number,
-                    'note' => $invoice->getNote(),
-                    'total' => $invoice->total_paid_tax_incl,
-                ];
-            }, $order->getInvoicesCollection()->all()),
-        ]);
     }
 
     public function addAction(Request $request, int $orderId)
     {
-        $order = new Order($orderId);
-        if (!\Validate::isLoadedObject($order)) {
-             return new JsonResponse(['success' => false, 'message' => 'Order not found'], 404);
-        }
-
-        $amount = (float)$request->request->get('amount');
-        $paymentMethod = $request->request->get('payment_method');
+        $amount = $request->request->get('amount');
+        $paymentMethod = $request->request->get('paymentMethod');
         $date = $request->request->get('date');
-        $transactionId = $request->request->get('transaction_id');
-        $idInvoice = (int)$request->request->get('id_invoice');
+        $transactionId = $request->request->get('transactionId');
+        $currencyId = $this->getCurrencyContext()->getId();
+        $invoiceId = $request->request->get('InvoiceId`');
+        $employeeId = $this->getEmployeeContext()->getEmployee()->getId();
 
-        $payment = new \OrderPayment();
-        $payment->order_reference = $order->reference;
-        $payment->amount = $amount;
-        $payment->payment_method = $paymentMethod;
-        $payment->date_add = $date ? str_replace('T', ' ', $date) : date('Y-m-d H:i:s');
-        $payment->transaction_id = $transactionId;
-        $payment->id_currency = $order->id_currency;
-        $payment->conversion_rate = 1;
-        
-        if ($payment->add()) {
-            if ($idInvoice > 0) {
-                Db::getInstance()->execute('INSERT INTO ' . _DB_PREFIX_ . 'order_invoice_payment (id_order_invoice, id_order_payment, id_order) VALUES (' . (int)$idInvoice . ', ' . (int)$payment->id . ', ' . (int)$orderId . ')');
-            }
+        try {
+            $this->dispatchCommand(new AddOrderPaymentCommand(
+                $orderId,
+                (string) $date,
+                (string) $paymentMethod,
+                (string) $amount,
+                (int) $currencyId,
+                (int) $employeeId,
+                $invoiceId,
+                $transactionId
+            ));
 
-            // Handle file upload
-            $file = $request->files->get('document');
-            if ($file) {
-                $originalName = $file->getClientOriginalName();
-                $extension = $file->guessExtension();
-                $newName = md5(uniqid()) . '.' . $extension;
-                $uploadDir = $this->getParameter('kernel.project_dir') . '/upload/orderpayment/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-                $file->move($uploadDir, $newName);
+            return $this->json(['success' => true]);
 
-                $doc = new OrderPaymentDocument();
-                $doc->setOrderPaymentId($payment->id);
-                $doc->setFilename($newName);
-                $doc->setOriginalFilename($originalName);
-
-                $em = $this->get('doctrine.orm.entity_manager');
-                $em->persist($doc);
-                $em->flush();
-            }
-
-            return new JsonResponse(['success' => true]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => $this->getErrorMessageForException($e, $this->getErrorMessages($e))], $this->getHttpErrorCode($e));
         }
-
-        return new JsonResponse(['success' => false, 'message' => 'Error adding payment']);
     }
 
     /**
@@ -160,61 +126,58 @@ class OrderPaymentController extends PrestaShopAdminController
     public function editAction(Request $request, int $paymentId): JsonResponse
     {
         $amount = $request->request->get('amount');
-        $paymentMethod = $request->request->get('payment_method');
+        $paymentMethod = $request->request->get('paymentMethod');
         $date = $request->request->get('date');
         $transactionId = $request->request->get('transaction_id');
-        $idInvoice = $request->request->get('id_invoice');
+        $currencyId = $this->getCurrencyContext()->getId();
+        $invoiceId = $request->request->get('id_invoice');
+        $employeeId = $this->getEmployeeContext()->getEmployee()->getId();
 
         try {
-            $payment = new \PsOrderPayment($paymentId);
-            if (!\Validate::isLoadedObject($payment)) {
-                return new JsonResponse(['success' => false, 'message' => 'Payment not found']);
-            }
+            $this->dispatchCommand(new EditOrderPayment(
+                $paymentId,
+                (string) $date,
+                (string) $paymentMethod,
+                (string) $amount,
+                (int) $currencyId,
+                (int) $employeeId,
+                $invoiceId ? (int) $invoiceId : null,
+                $transactionId
+            ));
 
-            $payment->amount = (float)$amount;
-            $payment->payment_method = $paymentMethod;
-            $payment->date_add = $date;
-            $payment->transaction_id = $transactionId;
-            // Note: id_invoice usually is not directly on OrderPayment in standard PS, 
-            // but this depends on how the module is implemented.
-            
-            if ($payment->update()) {
-                return new JsonResponse(['success' => true]);
-            }
+            return $this->json(['success' => true]);
         } catch (\Exception $e) {
-            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+            return $this->json(['message' => $this->getErrorMessageForException($e, $this->getErrorMessages($e))], $this->getHttpErrorCode($e));
         }
-
-        return new JsonResponse(['success' => false, 'message' => 'Error updating payment']);
     }
 
     public function deleteAction(int $paymentId)
     {
-        $payment = new PsOrderPayment($paymentId);
-        if (\Validate::isLoadedObject($payment)) {
-            $payment->delete();
-            
+        try {
             // Delete associated document
-            $repository = $this->get('OrderPayment\Repository\OrderPaymentDocumentRepository');
-            $doc = $repository->findOneBy(['orderPaymentId' => $paymentId]);
-            if ($doc) {
-                $filePath = $this->getParameter('kernel.project_dir') . '/upload/orderpayment/' . $doc->getFilename();
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
-                $em = $this->get('doctrine.orm.entity_manager');
-                $em->remove($doc);
-                $em->flush();
-            }
+//            $repository = $this->get('Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository');
+//            $doc = $repository->findOneBy(['orderPaymentId' => $paymentId]);
+//            if ($doc) {
+//                $filePath = $this->getParameter('kernel.project_dir') . '/upload/orderpayment/' . $doc->getFilename();
+//                if (file_exists($filePath)) {
+//                    unlink($filePath);
+//                }
+//                $em = $this->get('doctrine.orm.entity_manager');
+//                $em->remove($doc);
+//                $em->flush();
+//            }
 
-            return new JsonResponse(['success' => true]);
+            $this->dispatchCommand(new DeleteOrderPayment($paymentId));
+
+            return $this->json(['success' => true]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => $this->getErrorMessageForException($e, $this->getErrorMessages($e))], $this->getHttpErrorCode($e));
         }
-        return new JsonResponse(['success' => false, 'message' => 'Payment not found']);
     }
 
     public function downloadAction(int $paymentId)
     {
-        $repository = $this->get('OrderPayment\Repository\OrderPaymentDocumentRepository');
+        $repository = $this->get('Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository');
         $doc = $repository->findOneBy(['orderPaymentId' => $paymentId]);
         
         if (!$doc) {
@@ -234,5 +197,22 @@ class OrderPaymentController extends PrestaShopAdminController
         );
 
         return $response;
+    }
+
+    private function getErrorMessages(\Exception $e): array
+    {
+        return [
+                OrderPaymentException::class => $this->trans('', [], 'Modules.Orderpayment.Notifications')
+        ];
+    }
+
+    private function getHttpErrorCode(\Exception $e): int
+    {
+        switch (get_class($e)) {
+            case OrderPaymentException::class:
+                return Response::HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        return Response::HTTP_INTERNAL_SERVER_ERROR;
     }
 }

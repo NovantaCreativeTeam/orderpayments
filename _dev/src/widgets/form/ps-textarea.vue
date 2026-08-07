@@ -1,36 +1,36 @@
 <template>
-     <ValidationProvider :rules="validationRules" :vid="id" :name="name ?? label" v-slot="{ errors, passed, failed }">
-        <div class="form-group" :class="{'row': horizontal, 'has-success': passed && validationRules != null, 'has-danger': failed}">
+  <Field :rules="validationRules" :name="name ?? label" v-model="internalValue" v-slot="{ field, errors, meta }">
+        <div class="form-group" :class="{'row': horizontal, 'has-success': meta.valid && validationRules != null, 'has-danger': meta.touched && !meta.valid}">
             <label v-if="label" class="form-control-label" :for="id" :class="{'col-sm-3': horizontal}">{{label}}</label>
             <div :class="{ 'col-sm-9': horizontal }">
-                <textarea class="form-control" :disabled="disabled" :id="id" :value="value" @input="onInput" @change="onChange"
+                <textarea v-bind="field" class="form-control" :disabled="disabled" :id="id" v-model="internalValue" @change="onChange"
                     :class="{
-                        'is-valid': passed && validationRules != null,
-                        'is-invalid': failed,
+                        'is-valid': meta.valid && validationRules != null,
+                        'is-invalid': meta.touched && !meta.valid,
                     }"/>
                 <small class="form-text" v-if="helper">{{ helper }}</small>
-                <div class="invalid-feedback" v-show="errors.length && failed">
+                <div class="invalid-feedback" v-show="errors.length && meta.touched && !meta.valid">
                     <span v-for="error in errors" :key="error">{{error}}</span>
                 </div>
             </div>
         </div>
-        </ValidationProvider>
+        </Field>
 </template>
 
 <script>
-import { ValidationProvider, validate } from 'vee-validate';
+import { Field } from 'vee-validate';
 
 export default {
     props: {
         id: String,
         name: String,
-        value: String|Number,
+        modelValue: [String, Number],
         disabled: {
             type: Boolean,
             default: false
         },
         validationRules: {
-            type: String|Object,
+            type: [String, Object],
             required:false
         },
         label: {
@@ -43,18 +43,26 @@ export default {
             default: false
         }
     },
-    methods: {
-        onInput(event) {
-            validate(event.currentTarget.value)
-            this.$emit('input', event.currentTarget.value)
+    data() {
+        return {
+            internalValue: this.modelValue
+        }
+    },
+    watch: {
+        modelValue(newVal) {
+            this.internalValue = newVal;
         },
+        internalValue(newVal) {
+            this.$emit('update:modelValue', newVal);
+        }
+    },
+    methods: {
         onChange(event) {
-            validate(event.currentTarget.value)
             this.$emit('change', event.currentTarget.value)
         }
     },
     components: {
-        ValidationProvider
+        Field
     }
 };
 

@@ -1,2 +1,211 @@
 {
+  "order_payment_get_all": {
+    "tokens": [
+      [
+        "text",
+        "\/payment"
+      ],
+      [
+        "variable",
+        "\/",
+        "[^\/]++",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": [],
+    "hosttokens": [],
+    "methods": [
+      "GET"
+    ],
+    "schemes": []
+  },
+  "order_payment_add": {
+    "tokens": [
+      [
+        "text",
+        "\/payment"
+      ],
+      [
+        "variable",
+        "\/",
+        "[^\/]++",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": [],
+    "hosttokens": [],
+    "methods": [
+      "POST"
+    ],
+    "schemes": []
+  },
+  "order_payment_edit": {
+    "tokens": [
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "paymentId",
+        true
+      ],
+      [
+        "text",
+        "\/payment"
+      ],
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": {
+      "paymentId": "\\d+",
+      "orderId": "\\d+"
+    },
+    "hosttokens": [],
+    "methods": [
+      "POST"
+    ],
+    "schemes": []
+  },
+  "order_payment_delete": {
+    "tokens": [
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "paymentId",
+        true
+      ],
+      [
+        "text",
+        "\/payment"
+      ],
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": {
+      "orderId": "\\d+",
+      "paymentId": "\\d+"
+    },
+    "hosttokens": [],
+    "methods": [
+      "DELETE"
+    ],
+    "schemes": []
+  },
+  "order_payment_download": {
+    "tokens": [
+      [
+        "text",
+        "\/download"
+      ],
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "paymentId",
+        true
+      ],
+      [
+        "text",
+        "\/payment"
+      ],
+      [
+        "variable",
+        "\/",
+        "[^\/]++",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": {
+      "paymentId": "\\d+"
+    },
+    "hosttokens": [],
+    "methods": [
+      "GET"
+    ],
+    "schemes": []
+  },
+  "order_payment_i18n": {
+    "tokens": [
+      [
+        "text",
+        "\/modules\/order\/i18n"
+      ]
+    ],
+    "defaults": [],
+    "requirements": [],
+    "hosttokens": [],
+    "methods": [
+      "GET"
+    ],
+    "schemes": []
+  },
+  "admin_carrier_contact_index": {
+    "tokens": [
+      [
+        "text",
+        "\/modules\/carrier\/contact\/list"
+      ]
+    ],
+    "defaults": [],
+    "requirements": [],
+    "hosttokens": [],
+    "methods": [
+      "GET"
+    ],
+    "schemes": []
+  },
+  "admin_carrier_contact_new": {
+    "tokens": [
+      [
+        "text",
+        "\/modules\/carrier\/contact"
+      ]
+    ],
+    "defaults": [],
+    "requirements": [],
+    "hosttokens": [],
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "schemes": []
+  }
 }

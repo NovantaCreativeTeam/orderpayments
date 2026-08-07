@@ -6,7 +6,7 @@ const i18nApi = {
         // return axios.get(endpoint)
 
         // Così utilizzo la struttura di prestashop, con la versione sopra uso quella del modulo
-        return axios.get(translationUrl)
+        return axios.get(orderPaymentsTranslationUrl)
     }
 }
 

@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    public: true
+
+  Novanta\OrderPayment\Controller\Api\I18nController:
+    class: Novanta\OrderPayment\Controller\Api\I18nController
+    parent: PrestaShopBundle\Controller\Api\ApiController
+    public: true
+    tags:
+      - { name: !php/const PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController::PRESTASHOP_CORE_CONTROLLERS_TAG }

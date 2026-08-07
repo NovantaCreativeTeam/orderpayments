@@ -1,0 +1,29 @@
+services:
+  _defaults:
+    public: true
+
+  # ============== Queries
+
+  Novanta\OrderPayment\Adapter\OrderPayment\QueryHandler\GetOrderPaymentsHandler:
+    class: 'Novanta\OrderPayment\Adapter\OrderPayment\QueryHandler\GetOrderPaymentsHandler'
+    arguments:
+      - '@Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository'
+    autoconfigure: true
+
+  # ============== Commands
+
+  Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\EditOrderPaymentHandler:
+    class: 'Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\EditOrderPaymentHandler'
+    arguments:
+      - '@doctrine.orm.entity_manager'
+    autoconfigure: true
+
+  Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\DeleteOrderPaymentHandler:
+    class: 'Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\DeleteOrderPaymentHandler'
+    arguments:
+      - '@doctrine.orm.entity_manager'
+    autoconfigure: true
+
+  Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\AddOrderPaymentHandler:
+    class: 'Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\AddOrderPaymentHandler'
+    autoconfigure: true

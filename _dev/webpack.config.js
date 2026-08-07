@@ -6,7 +6,7 @@ const FileManagerPlugin = require('filemanager-webpack-plugin');
 module.exports = (env, argv) => {
   const config = {
     entry: {
-      'order-payment': './src/index.js'
+      'order.payments': './src/index.js'
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -30,13 +30,29 @@ module.exports = (env, argv) => {
         {
           test: /\.vue$/,
           loader: 'vue-loader'
-        }
+        },
+        {
+          test: /\.s[ac]ss$/i,
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader',
+            {
+              loader: 'sass-loader',
+              options: {
+                sassOptions: {
+                  indentedSyntax: true,
+                },
+              },
+            },
+          ],
+        },
       ]
     },
     resolve: {
       extensions: ['.js', '.vue'],
       alias: {
-        'vue$': 'vue/dist/vue.esm.js'
+        'vue$': 'vue/dist/vue.esm-bundler.js',
+        '@scss': path.resolve(__dirname, 'src/assets/scss')
       }
     },
     plugins: [
@@ -58,7 +74,7 @@ module.exports = (env, argv) => {
   };
 
   if (argv.mode === 'development') {
-    config.devtool = 'source-map';
+    config.devtool = 'eval-source-map';
   }
 
   return config;

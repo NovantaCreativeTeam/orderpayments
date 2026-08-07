@@ -24,13 +24,13 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace OrderPayment\Entity;
+namespace Novanta\OrderPayment\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table
- * @ORM\Entity(repositoryClass="OrderPayment\Repository\OrderPaymentDocumentRepository")
+ * @ORM\Entity(repositoryClass="Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository")
  */
 class OrderPaymentDocument
 {

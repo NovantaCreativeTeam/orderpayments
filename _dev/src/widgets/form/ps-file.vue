@@ -1,7 +1,7 @@
 <template>
-  <ValidationProvider :rules="validationRules" :vid="id" :name="name ?? label" v-slot="{ errors, passed, failed, dirty }">
+  <Field :rules="validationRules" :name="name ?? label" v-slot="{ errors, meta }">
     <div class="form-group"
-         :class="{'row': horizontal, 'has-success': passed && validationRules != null, 'has-danger': failed}">
+         :class="{'row': horizontal, 'has-success': meta.valid && validationRules != null, 'has-danger': meta.touched && !meta.valid}">
       <label v-if="label" class="form-control-label" :for="id" :class="{'col-sm-3': horizontal}">{{ label }}</label>
       <div :class="{ 'col-sm-9': horizontal }">
 
@@ -12,39 +12,39 @@
             class="custom-file-input"
             :disabled="disabled"
             :id="id"
-            @input="onInput"
-            @change="onChange"
-            :class="{'is-valid': !errors.length,'is-invalid': errors.length && dirty}"
+            @input="onInput(meta.validate, $event)"
+            @change="onChange(meta.validate, $event)"
+            :class="{'is-valid': meta.valid && validationRules != null,'is-invalid': meta.touched && !meta.valid}"
           />
 
           <label class="custom-file-label">
-            {{ value ? value.name : trans('choose_file') }}
+            {{ modelValue ? modelValue.name : trans('choose_file') }}
           </label>
         </div>
 
         <small class="form-text" v-if="helper">{{ helper }}</small>
-        <div class="invalid-feedback" v-show="errors.length && failed">
+        <div class="invalid-feedback" v-show="errors.length && meta.touched && !meta.valid">
           <span v-for="error in errors" :key="error">{{ error }}</span>
         </div>
       </div>
     </div>
-  </ValidationProvider>
+  </Field>
 </template>
 
 <script>
-import {ValidationProvider, validate} from 'vee-validate';
+import { Field } from 'vee-validate';
 
 export default {
   props: {
     id: String,
     name: String,
-    value: String|File,
+    modelValue: [String, Object],
     disabled: {
       type: Boolean,
       default: false
     },
     validationRules: {
-      type: String | Object,
+      type: [String, Object],
       required: false
     },
     label: {
@@ -58,17 +58,17 @@ export default {
     }
   },
   methods: {
-    onInput(event) {
-      validate(event)
-      this.$emit('input', event.currentTarget.value)
+    onInput(validate, event) {
+      validate()
+      this.$emit('update:modelValue', event.currentTarget.value)
     },
-    onChange(event) {
-      validate(event)
+    onChange(validate, event) {
+      validate()
       this.$emit('change', event.target.files)
     }
   },
   components: {
-    ValidationProvider
+    Field
   }
 };
 

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = {
   getAll(orderId) {
-    const url = window.prestashop.instance.router.generate('order_payment_list', { orderId });
+    const url = window.prestashop.instance.router.generate('order_payment_get_all', { orderId });
     return axios.get(url).then(response => response.data);
   },
 
@@ -15,8 +15,8 @@ const api = {
     }).then(response => response.data);
   },
 
-  update(paymentId, payment) {
-    const url = window.prestashop.instance.router.generate('order_payment_edit', { paymentId });
+  update(orderId, paymentId, payment) {
+    const url = window.prestashop.instance.router.generate('order_payment_edit', { orderId, paymentId });
     return axios.post(url, payment, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -24,8 +24,8 @@ const api = {
     }).then(response => response.data);
   },
 
-  delete(paymentId) {
-    const url = window.prestashop.instance.router.generate('order_payment_delete', { paymentId });
+  delete(orderId, paymentId) {
+    const url = window.prestashop.instance.router.generate('order_payment_delete', { 'orderId': orderId, 'paymentId': paymentId });
     return axios.delete(url).then(response => response.data);
   },
 

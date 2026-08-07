@@ -24,7 +24,7 @@
  *-->
 <template>
   <button
-    type="button"
+    :type="type"
     class="btn"
     :class="classObject"
   >
@@ -39,6 +39,10 @@ export default defineComponent({
   props: {
     primary: { type: Boolean },
     ghost: { type: Boolean },
+    type: {
+      type: String,
+      default: 'button',
+    }
   },
 
   computed: {
