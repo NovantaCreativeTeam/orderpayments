@@ -74,7 +74,23 @@ class Installer
                 `id_order_payment` INT(11) UNSIGNED NOT NULL,
                 `id_order_document` INT(11) UNSIGNED NOT NULL,
                 PRIMARY KEY (`id_order_payment`, `id_order_document`)
-            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;'
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;',
+
+            'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'order_invoice_document` (
+                `id_order_invoice` INT(11) UNSIGNED NOT NULL,
+                `id_order_document` INT(11) UNSIGNED NOT NULL,
+                PRIMARY KEY (`id_order_invoice`, `id_order_document`)
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;',
+
+            'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'order_invoice_proforma` (
+                `id_order_invoice_proforma` int(11) NOT NULL AUTO_INCREMENT,
+                `id_order_invoice` INT(11) UNSIGNED NOT NULL,
+                `payment_method` varchar(255) NULL,
+                `payment_term` varchar(255) NULL,
+                `amount_type` enum(\'amount\',\'percentage\') NULL,
+                `amount` decimal(20,6) NULL,
+                PRIMARY KEY (`id_order_invoice_proforma`)
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;',
         ];
 
         return $this->executeQueries($queries);
@@ -89,7 +105,9 @@ class Installer
     protected function uninstallDatabase()
     {
         $queries = [
-            'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'order_payment_document`;'
+            'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'order_payment_document`;',
+            'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'order_invoice_document`;',
+            'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'order_invoice_proforma`;',
         ];
 
         return $this->executeQueries($queries);
@@ -150,7 +168,7 @@ class Installer
         $invoicesTabId = SymfonyContainer::getInstance()->get('prestashop.core.admin.tab.repository')->findOneIdByClassName('AdminInvoices');
 
         $updateTabResults = true;
-        if($invoicesTabId) {
+        if ($invoicesTabId) {
             $invoicesTab = new Tab($invoicesTabId);
             $invoicesTab->class_name = 'AdminOrderInvoices';
             $invoicesTab->module = $module->name;
@@ -223,7 +241,7 @@ class Installer
 
         $tab->id_parent = (int)$tabRepository->findOneIdByClassName($parentClassName);
         $tab->wording = $name;
-        $tab->wording_domain = 'Modules.Orderpayment.Admin';
+        $tab->wording_domain = 'Modules.Orderpayments.Admin';
         $tab->module = $module->name;
 
         return $tab->save();

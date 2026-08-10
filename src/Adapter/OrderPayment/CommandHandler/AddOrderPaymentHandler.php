@@ -45,5 +45,8 @@ class AddOrderPaymentHandler extends AbstractOrderHandler implements AddOrderPay
         if (!$paymentAdded) {
             throw new OrderException('An error occurred during payment.');
         }
+
+        $orderInvoice->total_paid_tax_incl = $command->getPaymentAmount();
+        $orderInvoice->update();
     }
 }

@@ -2,6 +2,7 @@ import {createStore} from 'vuex'
 import orderPaymentApi from "../services/orderPayment.api";
 import i18nApi from "../services/i18n.api";
 import EventBus from "../utils/event-bus";
+import orderInvoiceApi from "../services/orderInvoice.api";
 
 const state = {
     invoices: [],
@@ -46,7 +47,9 @@ const actions = {
         })
     },
     loadInvoices({state, commit}) {
-        commit('setInvoices', [])
+        return orderInvoiceApi.getAll(id_order).then(response => {
+            commit('setInvoices', response)
+        })
     },
     loadPayments({state, commit}) {
         return orderPaymentApi.getAll(id_order).then(response => {

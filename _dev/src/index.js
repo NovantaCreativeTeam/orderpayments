@@ -48,5 +48,7 @@ $(document).ready(function () {
   store.dispatch('initialize');
 
   orderPaymentApp.mount('#order-payments-app')
+  $('#view_order_payments_block').remove()
+
   orderInvoicesApp.mount('#order-invoices-app')
 });

@@ -1,6 +1,6 @@
 <template>
   <Form v-slot="{ errors, handleSubmit }">
-
+    {{formData}}
     <PsAlert v-show="Object.keys(errors).length > 0" type="danger" class="mb-3">
       <p>{{ trans('correct_and_try_again') }}</p>
       <ul>
@@ -41,7 +41,9 @@
           label="Invoice"
           v-model="formData.invoiceId"
           id="payment_invoice"
-          :items="[]"
+          :items="invoices"
+          itemName="number"
+
       />
 
       <PSFile label="Document" id="payment_document" @change="handleFileUpload"/>
@@ -85,6 +87,7 @@ import EventBus from "../utils/event-bus";
 import PsButton from "../widgets/ps-button.vue";
 import PsAlert from "../widgets/ps-alert.vue";
 import PsSpinner from "../widgets/ps-spinner.vue";
+import {mapGetters} from "vuex";
 
 export default {
   name: 'OrderPaymentForm',
@@ -117,6 +120,9 @@ export default {
       formData: {...this.payment},
       isLoading: false,
     };
+  },
+  computed: {
+    ...mapGetters(["invoices"]),
   },
   watch: {
     payment: {

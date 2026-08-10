@@ -207,5 +207,133 @@
       "POST"
     ],
     "schemes": []
+  },
+  "order_invoice_get_all": {
+    "tokens": [
+      [
+        "text",
+        "\/invoice"
+      ],
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": {
+      "orderId": "\\d+"
+    },
+    "hosttokens": [],
+    "methods": [
+      "GET"
+    ],
+    "schemes": []
+  },
+  "order_invoice_add": {
+    "tokens": [
+      [
+        "text",
+        "\/invoice"
+      ],
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": {
+      "orderId": "\\d+"
+    },
+    "hosttokens": [],
+    "methods": [
+      "POST"
+    ],
+    "schemes": []
+  },
+  "order_invoice_edit": {
+    "tokens": [
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderInvoiceId",
+        true
+      ],
+      [
+        "text",
+        "\/invoice"
+      ],
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": {
+      "orderId": "\\d+",
+      "orderInvoiceId": "\\d+"
+    },
+    "hosttokens": [],
+    "methods": [
+      "POST"
+    ],
+    "schemes": []
+  },
+  "order_invoice_delete": {
+    "tokens": [
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderInvoiceId",
+        true
+      ],
+      [
+        "text",
+        "\/invoice"
+      ],
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": {
+      "orderId": "\\d+",
+      "orderInvoiceId": "\\d+"
+    },
+    "hosttokens": [],
+    "methods": [
+      "DELETE"
+    ],
+    "schemes": []
   }
 }

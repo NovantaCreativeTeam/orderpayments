@@ -18,40 +18,28 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace Novanta\OrderPayment\Domain\OrderPayment\QueryResult;
+namespace Novanta\OrderPayment\Domain\OrderInvoice\Query;
 
-use JsonSerializable;
-
-class OrderInvoiceForViewing implements JsonSerializable
+class GetOrderInvoices
 {
-    /** @var int */
-    private $id;
+    /**
+     * @var int
+     */
+    private $orderId;
 
-    /** @var string */
-    private $number;
-
-    public function __construct(
-        int $id,
-        string $number
-    ) {
-        $this->id = $id;
-        $this->number = $number;
+    /**
+     * @param int $orderId
+     */
+    public function __construct(int $orderId)
+    {
+        $this->orderId = $orderId;
     }
 
-    public function getId(): int
+    /**
+     * @return int
+     */
+    public function getOrderId(): int
     {
-        return $this->id;
-    }
-
-    public function getNumber(): string
-    {
-        return $this->number;
-    }
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->id,
-            'number' => $this->number,
-        ];
+        return $this->orderId;
     }
 }

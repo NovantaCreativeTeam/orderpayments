@@ -1,0 +1,28 @@
+services:
+  _defaults:
+    public: true
+
+  # ============== Queries
+
+  Novanta\OrderPayment\Adapter\OrderInvoice\QueryHandler\GetOrderInvoicesHandler:
+    class: 'Novanta\OrderPayment\Adapter\OrderInvoice\QueryHandler\GetOrderInvoicesHandler'
+    arguments:
+      - '@Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository'
+      - "@=service('prestashop.adapter.legacy.context').getContext().language.id"
+    autoconfigure: true
+
+  # ============== Commands
+
+  Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\AddOrderInvoiceHandler:
+    class: 'Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\AddOrderInvoiceHandler'
+    arguments:
+      - '@prestashop.adapter.legacy.configuration'
+    autoconfigure: true
+
+  Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\DeleteOrderInvoiceHandler:
+    class: 'Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\DeleteOrderInvoiceHandler'
+    autoconfigure: true
+
+  Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\EditOrderInvoiceHandler:
+    class: 'Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\EditOrderInvoiceHandler'
+    autoconfigure: true

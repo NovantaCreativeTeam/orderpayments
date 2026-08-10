@@ -20,12 +20,13 @@
 
 namespace Novanta\OrderPayment\Adapter\OrderPayment\QueryHandler;
 
+use Novanta\OrderPayment\Domain\OrderInvoice\QueryResult\OrderInvoiceForViewing;
 use Novanta\OrderPayment\Domain\OrderPayment\Query\GetOrderPayments;
 use Novanta\OrderPayment\Domain\OrderPayment\QueryHandler\GetOrderPaymentsHandlerInterface;
 use Novanta\OrderPayment\Domain\OrderPayment\QueryResult\EmployeeForViewing;
-use Novanta\OrderPayment\Domain\OrderPayment\QueryResult\OrderInvoiceForViewing;
 use Novanta\OrderPayment\Domain\OrderPayment\QueryResult\OrderPaymentForViewing;
 use Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository;
+use PrestaShop\PrestaShop\Adapter\LegacyContext;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
 use Order;
 use Employee;
@@ -38,13 +39,18 @@ class GetOrderPaymentsHandler implements GetOrderPaymentsHandlerInterface
      * @var OrderPaymentDocumentRepository
      */
     private $repository;
+    private $languageId;
 
     /**
      * @param OrderPaymentDocumentRepository $repository
      */
-    public function __construct(OrderPaymentDocumentRepository $repository)
+    public function __construct(
+        OrderPaymentDocumentRepository $repository,
+        $languageId
+    )
     {
         $this->repository = $repository;
+        $this->languageId = $languageId;
     }
 
     /**
@@ -72,7 +78,8 @@ class GetOrderPaymentsHandler implements GetOrderPaymentsHandlerInterface
                 (float)$payment->amount,
                 (string)$payment->payment_method,
                 $payment->transaction_id,
-                $invoice ? new OrderInvoiceForViewing((int)$invoice->id, $invoice->getInvoiceNumberFormatted((int)$order->id_lang)) : null,
+                $invoice ? (int)$invoice->id : null,
+                $invoice ? $invoice->getInvoiceNumberFormatted($this->languageId) : null,
                 $employee ? new EmployeeForViewing((int)$employee->id, $employee->firstname, $employee->lastname) : null,
                 $doc ? $doc->getOriginalFilename() : null,
                 $doc ? $doc->getOrderPaymentId() : null,

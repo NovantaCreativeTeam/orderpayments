@@ -96,7 +96,7 @@ class OrderPaymentController extends PrestaShopAdminController
         $date = $request->request->get('date');
         $transactionId = $request->request->get('transactionId');
         $currencyId = $this->getCurrencyContext()->getId();
-        $invoiceId = $request->request->get('InvoiceId`');
+        $invoiceId = $request->request->get('orderInvoiceId`');
         $employeeId = $this->getEmployeeContext()->getEmployee()->getId();
 
         try {
@@ -128,9 +128,9 @@ class OrderPaymentController extends PrestaShopAdminController
         $amount = $request->request->get('amount');
         $paymentMethod = $request->request->get('paymentMethod');
         $date = $request->request->get('date');
-        $transactionId = $request->request->get('transaction_id');
+        $transactionId = $request->request->get('transactionId');
         $currencyId = $this->getCurrencyContext()->getId();
-        $invoiceId = $request->request->get('id_invoice');
+        $invoiceId = $request->request->get('invoiceId');
         $employeeId = $this->getEmployeeContext()->getEmployee()->getId();
 
         try {
@@ -202,7 +202,7 @@ class OrderPaymentController extends PrestaShopAdminController
     private function getErrorMessages(\Exception $e): array
     {
         return [
-                OrderPaymentException::class => $this->trans('', [], 'Modules.Orderpayment.Notifications')
+                OrderPaymentException::class => $this->trans('', [], 'Modules.Orderpayments.Notifications')
         ];
     }
 

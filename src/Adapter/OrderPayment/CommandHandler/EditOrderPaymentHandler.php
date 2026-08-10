@@ -9,6 +9,7 @@ use Novanta\OrderPayment\Domain\OrderPayment\Command\EditOrderPayment;
 use Novanta\OrderPayment\Domain\OrderPayment\CommandHandler\EditOrderPaymentHandlerInterface;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentNotFoundException;
+use OrderInvoice;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
 use PrestaShop\PrestaShop\Core\Domain\Currency\Exception\CurrencyNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderNotFoundException;
@@ -99,25 +100,32 @@ class EditOrderPaymentHandler implements EditOrderPaymentHandlerInterface
 
         if ($command->getOrderInvoiceId()) {
 
-            if (!\OrderInvoice::existsInDatabase($command->getOrderInvoiceId())) {
+            $invoice = new OrderInvoice($command->getOrderInvoiceId());
+            if(!Validate::isLoadedObject($invoice)) {
                 throw new OrderInvoiceNotFoundException(sprintf('Order Invoice with id "%s" cannot be found.', $command->getOrderInvoiceId()));
             }
 
+            $invoice->total_paid_tax_incl = $command->getPaymentAmount();
+            $invoice->update();
+
             $orderInvoices =
                 $this->entityManager->getConnection()
-                    ->prepare('SELECT oip.* FROM `' . _DB_PREFIX_ . 'order_invoice_payment` WHERE oip. = :id_order_payment')
-                    ->executeQuery(['id_order_payment' => $orderPayment->id]);
+                    ->prepare('SELECT oip.* FROM `' . _DB_PREFIX_ . 'order_invoice_payment` oip WHERE oip.id_order_payment = :id_order_payment')
+                    ->executeQuery(['id_order_payment' => $orderPayment->id])
+                    ->fetchAllAssociative();
 
             if (!empty($orderInvoices)) {
                 foreach ($orderInvoices as $orderInvoice) {
                     $this->entityManager->getConnection()
                         ->prepare('UPDATE `' . _DB_PREFIX_ . 'order_invoice_payment` SET id_order_invoice = :id_order_invoice WHERE id_order_payment = :id_order_payment')
                         ->executeStatement(['id_order_invoice' => $command->getOrderInvoiceId(), 'id_order_payment' => $orderPayment->id]);
+
+
                 }
             } else {
                 $this->entityManager->getConnection()
-                    ->prepare('INSERT INTO `' . _DB_PREFIX_ . 'order_invoice_payment` (`id_order_invoice`, `id_order_payment`) VALUES (:id_order_invoice, :id_order_payment')
-                    ->executeStatement(['id_order_invoice' => $command->getOrderInvoiceId(), 'id_order_payment' => $orderPayment->id]);
+                    ->prepare('INSERT INTO `' . _DB_PREFIX_ . 'order_invoice_payment` (`id_order_invoice`, `id_order_payment`, `id_order`) VALUES (:id_order_invoice, :id_order_payment, :id_order)')
+                    ->executeStatement(['id_order_invoice' => $command->getOrderInvoiceId(), 'id_order_payment' => $orderPayment->id, 'id_order' => $order->id]);
             }
         } else {
             $this->entityManager->getConnection()

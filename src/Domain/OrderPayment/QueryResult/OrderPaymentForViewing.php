@@ -21,8 +21,9 @@
 namespace Novanta\OrderPayment\Domain\OrderPayment\QueryResult;
 
 use JsonSerializable;
+use Novanta\OrderPayment\Domain\OrderInvoice\QueryResult\OrderInvoiceForViewing;
 
-class OrderPaymentForViewing implements JsonSerializable
+class OrderPaymentForViewing
 {
     /** @var int */
     private $id;
@@ -36,8 +37,8 @@ class OrderPaymentForViewing implements JsonSerializable
     /** @var string|null */
     private $transactionId;
 
-    /** @var OrderInvoiceForViewing|null */
-    private $orderInvoice;
+    /** @var string|null */
+    private $orderInvoiceNumber;
 
     /** @var EmployeeForViewing|null */
     private $employee;
@@ -50,23 +51,26 @@ class OrderPaymentForViewing implements JsonSerializable
 
     /** @var string */
     private $date;
+    private ?int $orderInvoiceId;
 
     public function __construct(
-        int $id,
-        float $amount,
-        string $method,
-        ?string $transactionId,
-        ?OrderInvoiceForViewing $orderInvoice,
+        int                 $id,
+        float               $amount,
+        string              $method,
+        ?string             $transactionId,
+        ?int                $orderInvoiceId,
+        ?string             $orderInvoiceNumber,
         ?EmployeeForViewing $employee,
-        ?string $document,
-        ?int $documentId,
-        string $date
+        ?string             $document,
+        ?int                $documentId,
+        string              $date
     ) {
         $this->id = $id;
         $this->amount = $amount;
         $this->method = $method;
         $this->transactionId = $transactionId;
-        $this->orderInvoice = $orderInvoice;
+        $this->orderInvoiceId = $orderInvoiceId;
+        $this->orderInvoiceNumber = $orderInvoiceNumber;
         $this->employee = $employee;
         $this->document = $document;
         $this->documentId = $documentId;
@@ -93,9 +97,9 @@ class OrderPaymentForViewing implements JsonSerializable
         return $this->transactionId;
     }
 
-    public function getOrderInvoice(): ?OrderInvoiceForViewing
+    public function getOrderInvoiceNumber(): ?string
     {
-        return $this->orderInvoice;
+        return $this->orderInvoiceNumber;
     }
 
     public function getEmployee(): ?EmployeeForViewing
@@ -118,18 +122,8 @@ class OrderPaymentForViewing implements JsonSerializable
         return $this->date;
     }
 
-    public function jsonSerialize(): array
+    public function getOrderInvoiceId(): ?int
     {
-        return [
-            'id' => $this->id,
-            'amount' => $this->amount,
-            'method' => $this->method,
-            'transactionId' => $this->transactionId,
-            'orderInvoice' => $this->orderInvoice,
-            'employee' => $this->employee,
-            'document' => $this->document,
-            'documentId' => $this->documentId,
-            'date' => $this->date,
-        ];
+        return $this->orderInvoiceId;
     }
 }

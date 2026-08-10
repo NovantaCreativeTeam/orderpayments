@@ -9,7 +9,43 @@ order_invoice_index:
 # ====== Order Invoice API ======
 
 order_invoice_get_all:
-  path: /
+  path: /{orderId}/invoice
   methods: [GET]
   defaults:
     _controller: Novanta\OrderPayment\Controller\Admin\OrderInvoiceController::getAllAction
+  requirements:
+    orderId: \d+
+  options:
+    expose: true
+
+order_invoice_add:
+  path: /{orderId}/invoice
+  methods: [POST]
+  defaults:
+    _controller: Novanta\OrderPayment\Controller\Admin\OrderInvoiceController::addAction
+  requirements:
+    orderId: \d+
+  options:
+    expose: true
+
+order_invoice_edit:
+  path: /{orderId}/invoice/{orderInvoiceId}
+  methods: [POST]
+  defaults:
+    _controller: Novanta\OrderPayment\Controller\Admin\OrderInvoiceController::editAction
+  requirements:
+    orderId: \d+
+    orderInvoiceId: \d+
+  options:
+    expose: true
+
+order_invoice_delete:
+  path: /{orderId}/invoice/{orderInvoiceId}
+  methods: [DELETE]
+  defaults:
+    _controller: Novanta\OrderPayment\Controller\Admin\OrderInvoiceController::deleteAction
+  requirements:
+      orderId: \d+
+      orderInvoiceId: \d+
+  options:
+    expose: true

@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    public: true
+
+  Novanta\OrderPayment\Controller\Admin\OrderInvoiceController:
+    autowire: true
+    autoconfigure: true

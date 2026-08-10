@@ -48,8 +48,8 @@ class OrderPayments extends \Module
 
         parent::__construct();
 
-        $this->displayName = $this->trans('Multiple Order Payments', [], 'Modules.Orderpayment.Admin');
-        $this->description = $this->trans('Manage multiple payments for a single order and generate proforma invoices.', [], 'Modules.Orderpayment.Admin');
+        $this->displayName = $this->trans('Multiple Order Payments', [], 'Modules.Orderpayments.Admin');
+        $this->description = $this->trans('Manage multiple payments for a single order and generate proforma invoices.', [], 'Modules.Orderpayments.Admin');
 
         $this->ps_versions_compliancy = ['min' => '8.0.0', 'max' => '9.9.99'];
     }

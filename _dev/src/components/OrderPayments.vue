@@ -38,7 +38,7 @@
           <td>{{ $filters.formatDate(payment.date) }}</td>
           <td>{{ payment.method }}</td>
           <td>{{ payment.transactionId || '---' }}</td>
-          <td>{{ payment.orderInvoice ? payment.orderInvoice.number : '---' }}</td>
+          <td>{{ payment.orderInvoiceNumber || '---' }}</td>
           <td>{{ payment.employee ? payment.employee.fullName : '---' }}</td>
           <td>{{ $filters.formatCurrency(payment.amount, summary.currencyIsoCode) }}</td>
           <td>
@@ -162,13 +162,16 @@ export default {
         paymentMethod: payment.method,
         date: payment.date.replace(' ', 'T'),
         transactionId: payment.transactionId,
-        invoiceId: payment.orderInvoice ? payment.orderInvoice.id : 0
+        invoiceId: payment.orderInvoiceId
       };
       this.modalTranslations.modal_title = this.trans('edit_payment');
       this.$refs.paymentModal.showModal();
     },
     onOrderPaymentSaved() {
-      this.$store.dispatch('loadPayments').finally(() => {
+      Promise.all([
+        this.$store.dispatch('loadInvoices'),
+        this.$store.dispatch('loadPayments')
+      ]).finally(() => {
         this.$refs.paymentModal.hideModal();
         this.orderPaymentToEdit = null;
         this.isSubmitting = false;
@@ -205,6 +208,7 @@ export default {
 .actions
   display: flex
   align-items: center
+
   .add-payment
     margin-left: auto
 

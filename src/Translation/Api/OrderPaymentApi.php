@@ -47,6 +47,17 @@ class OrderPaymentApi extends AbstractApi
             'delete_order_payment_confirm' => $this->translator->trans('Are you sure you want to delete this payment?', [], 'Modules.Orderpayments.Admin'),
             'invoice' => $this->translator->trans('Invoice', [], 'Modules.Orderpayments.Admin'),
             'employee' => $this->translator->trans('Employee', [], 'Modules.Orderpayments.Admin'),
+            'invoice_number' => $this->translator->trans('Invoice number', [], 'Modules.Orderpayments.Admin'),
+            'payment_term' => $this->translator->trans('Payment term', [], 'Modules.Orderpayments.Admin'),
+            'total_to_pay' => $this->translator->trans('Total to pay', [], 'Modules.Orderpayments.Admin'),
+            'total_paid' => $this->translator->trans('Total paid', [], 'Modules.Orderpayments.Admin'),
+            'no_invoices_found' => $this->translator->trans('No invoices found', [], 'Modules.Orderpayments.Admin'),
+            'create_invoice' => $this->translator->trans('Create invoice', [], 'Modules.Orderpayments.Admin'),
+            'add_new_invoice' => $this->translator->trans('Add new invoice', [], 'Modules.Orderpayments.Admin'),
+            'new_invoice' => $this->translator->trans('New invoice', [], 'Modules.Orderpayments.Admin'),
+            'edit_invoice' => $this->translator->trans('Edit invoice', [], 'Modules.Orderpayments.Admin'),
+            'delete_order_invoice_confirm' => $this->translator->trans('Are you sure you want to delete this invoice?', [], 'Modules.Orderpayments.Admin'),
+            'percentage' => $this->translator->trans('Percentage', [], 'Modules.Orderpayments.Admin'),
 
             
             // Add other common translations if needed
