@@ -1,6 +1,5 @@
 <template>
   <div id="order-invoice-container" class="container">
-    {{invoices}}
     <PSSpinner v-if="isLoading"/>
     <template v-else>
       <PSTable>
