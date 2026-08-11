@@ -65,7 +65,7 @@ export default {
     },
     watch: {
         modelValue(newVal) {
-            let initialDate = newVal ? moment(newVal) : null;
+            let initialDate = newVal ? moment(newVal, 'DD/MM/YYYY') : null;
             if (initialDate && initialDate.isValid()) {
                 let formatted = initialDate.format('DD/MM/YYYY');
                 if (this.dateValue !== formatted) {

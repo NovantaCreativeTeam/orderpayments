@@ -1,5 +1,6 @@
 <template>
   <div id="order-invoice-container" class="container">
+    {{invoices}}
     <PSSpinner v-if="isLoading"/>
     <template v-else>
       <PSTable>
@@ -18,8 +19,8 @@
         <tr v-for="invoice in invoices" :key="invoice.id">
           <td>{{ $filters.formatDate(invoice.dateAdd) }}</td>
           <td>{{ invoice.number }}</td>
-          <td>{{ invoice.paymentMethod || '---' }}</td>
-          <td>{{ invoice.paymentTerm }} {{ invoice.amountType}} {{ invoice.amount || '---'}}</td>
+          <td>{{ invoice.paymentMethod ? trans(invoice.paymentMethod) : '---' }}</td>
+          <td>{{ trans(invoice.paymentTerm) }} <span v-if="invoice.paymentTerm !== 'total'">{{ invoice.amount || '---'}}</span><span v-if="invoice.paymentTerm !== 'total' && invoice.amount > 0">{{ invoice.amountType === 'percentage' ? '%' : invoice.currencyIsoCode + ''}}</span></td>
           <td>{{ $filters.formatCurrency(invoice.totalToPay) }}</td>
           <td><span class="badge" :class="{ 'badge-danger': invoice.totalPaidTaxIncluded === 0, 'badge-success': invoice.totalPaidTaxIncluded === invoice.totalToPay, 'badge-warning': invoice.totalPaidTaxIncluded > 0 && invoice.totalPaidTaxIncluded !== invoice.totalToPay }">{{ $filters.formatCurrency(invoice.totalPaidTaxIncluded) }}</span></td>
           <td>
@@ -106,7 +107,7 @@ export default {
         paymentTerm: '',
         amountType: 'amount',
         amount: 0,
-        shippingDate: moment().format('DD/MM/YYYY'),
+        deliveryDate: '',
         note: '',
       };
       this.modalTranslations.modal_title = this.trans('new_invoice');
@@ -119,7 +120,7 @@ export default {
         paymentTerm: invoice.paymentTerm,
         amountType: invoice.amountType || 'amount',
         amount: invoice.amount,
-        shippingDate: invoice.dateAdd ? moment(invoice.dateAdd).format('DD/MM/YYYY') : moment().format('DD/MM/YYYY'),
+        deliveryDate: invoice.deliveryDate,
         note: invoice.note,
       };
       this.modalTranslations.modal_title = this.trans('edit_invoice');

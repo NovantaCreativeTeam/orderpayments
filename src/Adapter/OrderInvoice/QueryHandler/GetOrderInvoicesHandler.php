@@ -21,6 +21,7 @@
 namespace Novanta\OrderPayment\Adapter\OrderInvoice\QueryHandler;
 
 use Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository;
+use Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentTerm;
 use Novanta\OrderPayment\Domain\OrderInvoice\Query\GetOrderInvoices;
 use Novanta\OrderPayment\Domain\OrderInvoice\QueryHandler\GetOrderInvoicesHandlerInterface;
 use Novanta\OrderPayment\Domain\OrderInvoice\QueryResult\OrderInvoiceForViewing;
@@ -65,9 +66,9 @@ class GetOrderInvoicesHandler implements GetOrderInvoicesHandlerInterface
 
             $totalOrder = $order->total_products_wt + $order->total_shipping_tax_incl + $order->total_wrapping_tax_incl - $order->total_discounts_tax_incl;
             $totalToPay = $totalOrder;
-            if($invoice['amount_type'] === 'percentage') {
+            if($invoice['payment_term'] !== OrderInvoicePaymentTerm::TOTAL->value && $invoice['amount_type'] === 'percentage') {
                 $totalToPay = $totalOrder * ($invoice['amount'] / 100);
-            } elseif ( $invoice['amount_type'] === 'amount') {
+            } elseif ($invoice['payment_term'] !== OrderInvoicePaymentTerm::TOTAL->value && $invoice['amount_type'] === 'amount') {
                 $totalToPay = $invoice['amount'];
             }
 
@@ -81,7 +82,8 @@ class GetOrderInvoicesHandler implements GetOrderInvoicesHandlerInterface
                 $invoice['note'],
                 (float)$invoice['total_paid_tax_incl'],
                 $totalToPay,
-                $invoice['date_add']
+                $invoice['date_add'],
+                $invoice['delivery_date'],
             );
         }
 

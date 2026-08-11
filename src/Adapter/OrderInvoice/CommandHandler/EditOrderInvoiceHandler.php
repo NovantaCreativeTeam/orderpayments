@@ -28,7 +28,7 @@ class EditOrderInvoiceHandler implements EditOrderInvoiceHandlerInterface
             throw new OrderInvoiceNotFoundException($command->getOrderInvoiceId(), sprintf('Order invoice with id "%d" was not found.', $command->getOrderInvoiceId()->getValue()));
         }
 
-        $orderInvoice->delivery_date = pSQL($command->getShippingDate()->format('Y-m-d H:i:s'));
+        $orderInvoice->delivery_date = pSQL($command->getDeliveryDate()->format('Y-m-d H:i:s'));
         $orderInvoice->note = pSQL($command->getNote());
 
         if (!$orderInvoice->update()) {

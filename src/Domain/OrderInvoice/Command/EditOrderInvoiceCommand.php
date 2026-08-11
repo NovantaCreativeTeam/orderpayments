@@ -37,7 +37,7 @@ class EditOrderInvoiceCommand
     /**
      * @var DateTimeImmutable
      */
-    private $shippingDate;
+    private $deliveryDate;
 
     /**
      * @var string|null
@@ -45,20 +45,20 @@ class EditOrderInvoiceCommand
     private $note;
 
     public function __construct(
-        int $orderInvoiceId,
+        int                        $orderInvoiceId,
         ?OrderInvoicePaymentMethod $paymentMethod,
-        ?OrderInvoicePaymentTerm $paymentTerm,
-        string $amountType,
-        float $amount,
-        string $shippingDate,
-        ?string $note = null
+        ?OrderInvoicePaymentTerm   $paymentTerm,
+        string                     $amountType,
+        float                      $amount,
+        string                     $deliveryDate,
+        ?string                    $note = null
     ) {
         $this->orderInvoiceId = new OrderInvoiceId($orderInvoiceId);
         $this->paymentMethod = $paymentMethod;
         $this->paymentTerm = $paymentTerm;
         $this->amountType = $amountType;
         $this->amount = $amount;
-        $this->shippingDate = new DateTimeImmutable($shippingDate);
+        $this->deliveryDate = new DateTimeImmutable($deliveryDate);
         $this->note = $note;
     }
 
@@ -105,9 +105,9 @@ class EditOrderInvoiceCommand
     /**
      * @return DateTimeImmutable
      */
-    public function getShippingDate(): DateTimeImmutable
+    public function getDeliveryDate(): DateTimeImmutable
     {
-        return $this->shippingDate;
+        return $this->deliveryDate;
     }
 
     /**

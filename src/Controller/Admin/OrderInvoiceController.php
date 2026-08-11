@@ -30,8 +30,8 @@ class OrderInvoiceController extends PrestaShopAdminController
             
             $command = new AddOrderInvoiceCommand(
                 $orderId,
-                $data['paymentMethod'],
-                $data['paymentTerm'],
+                $data['paymentMethod'] ? OrderInvoicePaymentMethod::from($data['paymentMethod']) : null,
+                $data['paymentTerm'] ? OrderInvoicePaymentTerm::from($data['paymentTerm']) : null,
                 $data['amountType'],
                 (float)$data['amount'],
                 $data['shippingDate'],
@@ -73,7 +73,7 @@ class OrderInvoiceController extends PrestaShopAdminController
                 $data['paymentTerm'] ? OrderInvoicePaymentTerm::from($data['paymentTerm']) : null,
                 $data['amountType'],
                 (float)$data['amount'],
-                $data['shippingDate'],
+                $data['deliveryDate'],
                 $data['note'] ?? null
             );
 

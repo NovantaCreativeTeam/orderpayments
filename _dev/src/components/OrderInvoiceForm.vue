@@ -1,6 +1,5 @@
 <template>
   <Form v-slot="{ errors, handleSubmit }">
-
     <PsAlert v-show="Object.keys(errors).length > 0" type="danger" class="mb-3">
       <p>{{ trans('correct_and_try_again') }}</p>
       <ul>
@@ -41,9 +40,9 @@
         />
 
         <PSDatepicker
-            label="Shipping Date"
-            v-model="formData.shippingDate"
-            id="shipping_date"
+            label="Delivery Date"
+            v-model="formData.deliveryDate"
+            id="delivery_date"
             validationRules="required"
         />
 
@@ -115,7 +114,7 @@ export default {
         paymentTerm: '',
         amountType: 'amount',
         amount: 0,
-        shippingDate: moment().format('DD/MM/YYYY'),
+        deliveryDate: '',
         note: '',
       })
     }
@@ -138,17 +137,6 @@ export default {
       availablePaymentTerms: paymentTerms.map(term => ({id: term, name: this.trans(term)}))
     };
   },
-  watch: {
-    invoice: {
-      handler(newVal) {
-        this.formData = {...newVal};
-        if (this.formData.shippingDate && this.formData.shippingDate.includes('T')) {
-          this.formData.shippingDate = moment(this.formData.shippingDate).format('DD/MM/YYYY');
-        }
-      },
-      deep: true
-    }
-  },
   methods: {
     onCancel() {
       this.$emit('cancel')
@@ -161,6 +149,8 @@ export default {
       const payload = {
           ...this.formData,
       };
+
+      payload.deliveryDate = payload.deliveryDate ? moment(payload.deliveryDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;
 
       if (this.formData.id) {
         promise = orderInvoiceApi.update(id_order, this.formData.id, payload)

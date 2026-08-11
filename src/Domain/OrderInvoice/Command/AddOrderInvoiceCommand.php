@@ -46,8 +46,8 @@ class AddOrderInvoiceCommand
 
     public function __construct(
         int $orderId,
-        OrderInvoicePaymentMethod $paymentMethod,
-        OrderInvoicePaymentTerm $paymentTerm,
+        ?OrderInvoicePaymentMethod $paymentMethod,
+        ?OrderInvoicePaymentTerm $paymentTerm,
         string $amountType,
         float $amount,
         string $shippingDate,
