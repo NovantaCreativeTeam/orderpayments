@@ -42,6 +42,7 @@
     </div>
 </div>
 
-{*<script>*}
-{*    var orderId = {$orderId}*}
-{*</script>*}
+<script>
+    var paymentMethods = {$paymentMethods|json_encode}
+    var paymentTerms = {$paymentTerms|json_encode}
+</script>

@@ -1,6 +1,5 @@
 <template>
   <Form v-slot="{ errors, handleSubmit }">
-    {{formData}}
     <PsAlert v-show="Object.keys(errors).length > 0" type="danger" class="mb-3">
       <p>{{ trans('correct_and_try_again') }}</p>
       <ul>
@@ -19,9 +18,10 @@
           validationRules="required"
       />
 
-      <PSInput
+      <PSSelect
           label="Payment Method"
           v-model="formData.paymentMethod"
+          :items="availablePaymentMethods"
           validationRules="required"
       />
 
@@ -119,6 +119,7 @@ export default {
     return {
       formData: {...this.payment},
       isLoading: false,
+      availablePaymentMethods: paymentMethods.map(method => ({id: method, name: this.trans(method)})),
     };
   },
   computed: {

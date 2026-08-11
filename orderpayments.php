@@ -82,6 +82,8 @@ class OrderPayments extends \Module
             'orderId' => $orderId,
             'paymentsTitle' => $this->trans('Payments', [], 'Modules.Orderpayments.Admin'),
             'invoicesTitle' => $this->trans('Invoices', [], 'Modules.Orderpayments.Admin'),
+            'paymentMethods' => array_column(\Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentMethod::cases(), 'value'),
+            'paymentTerms' => array_column(\Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentTerm::cases(), 'value'),
         ]);
 
         return $this->display(__FILE__, 'views/templates/hook//order_main_bottom.tpl');

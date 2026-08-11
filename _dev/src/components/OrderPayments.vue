@@ -4,20 +4,18 @@
     <template v-else>
       <div class="row mb-3 payment-summary">
         <div class="col-md-4 text-center">
-          <strong>Total Order</strong><br>
-          {{ $filters.formatCurrency(summary.totalOrder, summary.currencyIsoCode) }}
+          <strong>{{ trans('total_order') }}</strong><br>
+          <span class="badge badge-primary">{{ $filters.formatCurrency(summary.totalOrder, summary.currencyIsoCode) }}</span>
         </div>
         <div class="col-md-4 text-center">
-          <strong>Total Paid</strong><br>
-          <span class="badge badge-success">{{
-              $filters.formatCurrency(summary.totalPaid, summary.currencyIsoCode)
-            }}</span>
+          <strong>{{ trans('total_paid')}}</strong><br>
+          <span class="badge" :class="{'badge-success': summary.totalPaid === summary.totalOrder, 'badge-warning': summary.totalPaid < summary.totalOrder && summary.totalPaid > 0, 'badge-danger': summary.totalPaid === 0 }">{{ $filters.formatCurrency(summary.totalPaid, summary.currencyIsoCode) }}</span>
         </div>
         <div class="col-md-4 text-center">
-          <strong>Remaining</strong><br>
-          <span class="badge badge-danger">{{
-              $filters.formatCurrency(summary.remaining, summary.currencyIsoCode)
-            }}</span>
+          <strong>{{ trans('remaining') }}</strong><br>
+          <span class="badge" :class="{'badge-success': summary.remaining === 0, 'badge-danger': summary.remaining > 0}">
+            {{ $filters.formatCurrency(summary.remaining, summary.currencyIsoCode) }}
+          </span>
         </div>
       </div>
 
@@ -36,7 +34,7 @@
         <tbody>
         <tr v-for="payment in payments" :key="payment.id">
           <td>{{ $filters.formatDate(payment.date) }}</td>
-          <td>{{ payment.method }}</td>
+          <td>{{ trans(payment.method) }}</td>
           <td>{{ payment.transactionId || '---' }}</td>
           <td>{{ payment.orderInvoiceNumber || '---' }}</td>
           <td>{{ payment.employee ? payment.employee.fullName : '---' }}</td>

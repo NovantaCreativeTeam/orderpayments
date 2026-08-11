@@ -59,7 +59,15 @@ class OrderPaymentApi extends AbstractApi
             'delete_order_invoice_confirm' => $this->translator->trans('Are you sure you want to delete this invoice?', [], 'Modules.Orderpayments.Admin'),
             'percentage' => $this->translator->trans('Percentage', [], 'Modules.Orderpayments.Admin'),
 
-            
+            'card' => $this->translator->trans('Card', [], 'Modules.Orderpayments.Admin'),
+            'paypal' => $this->translator->trans('PayPal', [], 'Modules.Orderpayments.Admin'),
+            'wirepayment' => $this->translator->trans('Wire payment', [], 'Modules.Orderpayments.Admin'),
+            'satispay' => $this->translator->trans('Satispay', [], 'Modules.Orderpayments.Admin'),
+            'cash' => $this->translator->trans('Cash', [], 'Modules.Orderpayments.Admin'),
+            'advance' => $this->translator->trans('Andvance', [], 'Modules.Orderpayments.Admin'),
+            'down' => $this->translator->trans('Down', [], 'Modules.Orderpayments.Admin'),
+            'total' => $this->translator->trans('Total', [], 'Modules.Orderpayments.Admin'),
+
             // Add other common translations if needed
             'are_sure' => $this->translator->trans('Are you sure?', [], 'Modules.Orderpayments.Admin'),
             'yes' => $this->translator->trans('Yes', [], 'Modules.Orderpayments.Admin'),

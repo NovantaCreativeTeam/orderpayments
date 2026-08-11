@@ -2,6 +2,8 @@
 
 namespace Novanta\OrderPayment\Domain\OrderInvoice\Command;
 
+use Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentMethod;
+use Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentTerm;
 use PrestaShop\PrestaShop\Core\Domain\Order\Invoice\ValueObject\OrderInvoiceId;
 use DateTimeImmutable;
 
@@ -44,8 +46,8 @@ class EditOrderInvoiceCommand
 
     public function __construct(
         int $orderInvoiceId,
-        string $paymentMethod,
-        string $paymentTerm,
+        ?OrderInvoicePaymentMethod $paymentMethod,
+        ?OrderInvoicePaymentTerm $paymentTerm,
         string $amountType,
         float $amount,
         string $shippingDate,
@@ -71,7 +73,7 @@ class EditOrderInvoiceCommand
     /**
      * @return string
      */
-    public function getPaymentMethod(): string
+    public function getPaymentMethod()
     {
         return $this->paymentMethod;
     }
@@ -79,7 +81,7 @@ class EditOrderInvoiceCommand
     /**
      * @return string
      */
-    public function getPaymentTerm(): string
+    public function getPaymentTerm()
     {
         return $this->paymentTerm;
     }

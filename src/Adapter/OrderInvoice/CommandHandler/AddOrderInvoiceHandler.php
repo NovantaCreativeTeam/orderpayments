@@ -99,8 +99,8 @@ class AddOrderInvoiceHandler implements AddOrderInvoiceHandlerInterface
     {
         Db::getInstance()->insert('order_invoice_proforma', [
             'id_order_invoice' => $orderInvoiceId,
-            'payment_method' => pSQL($command->getPaymentMethod()),
-            'payment_term' => pSQL($command->getPaymentTerm()),
+            'payment_method' => pSQL($command->getPaymentMethod()?->value),
+            'payment_term' => pSQL($command->getPaymentTerm()?->value),
             'amount_type' => pSQL($command->getAmountType()),
             'amount' => (float)$command->getAmount(),
         ]);

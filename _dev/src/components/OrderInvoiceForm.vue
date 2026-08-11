@@ -11,15 +11,17 @@
     </PsAlert>
     <slot>
       <form @submit.prevent="handleSubmit(onSubmit)">
-        <PSInput
+        <PSSelect
             label="Payment Method"
             v-model="formData.paymentMethod"
+            :items="availablePaymentMethods"
             validationRules="required"
         />
 
-        <PSInput
+        <PSSelect
             label="Payment Term"
             v-model="formData.paymentTerm"
+            :items="availablePaymentTerms"
             validationRules="required"
         />
 
@@ -28,14 +30,14 @@
             v-model="formData.amountType"
             id="amount_type"
             :items="amountTypeOptions"
-            validationRules="required"
+            v-if="formData.paymentTerm === 'advance' || formData.paymentTerm === 'down'"
         />
 
         <PSInput
             label="Amount"
             type="number"
             v-model="formData.amount"
-            validationRules="required"
+            v-if="formData.paymentTerm === 'advance' || formData.paymentTerm === 'down'"
         />
 
         <PSDatepicker
@@ -131,7 +133,9 @@ export default {
           id: 'percentage',
           name: this.trans('percentage')
         }
-      ]
+      ],
+      availablePaymentMethods: paymentMethods.map(method => ({id: method, name: this.trans(method)})),
+      availablePaymentTerms: paymentTerms.map(term => ({id: term, name: this.trans(term)}))
     };
   },
   watch: {

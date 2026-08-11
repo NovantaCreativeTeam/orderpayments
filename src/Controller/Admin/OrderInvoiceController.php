@@ -6,6 +6,8 @@ use Novanta\OrderCharging\Domain\OrderCharging\Exception\OrderInvoiceNotFoundExc
 use Novanta\OrderPayment\Domain\OrderInvoice\Command\AddOrderInvoiceCommand;
 use Novanta\OrderPayment\Domain\OrderInvoice\Command\DeleteOrderInvoiceCommand;
 use Novanta\OrderPayment\Domain\OrderInvoice\Command\EditOrderInvoiceCommand;
+use Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentMethod;
+use Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentTerm;
 use Novanta\OrderPayment\Domain\OrderInvoice\Query\GetOrderInvoices;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderNotFoundException;
@@ -67,8 +69,8 @@ class OrderInvoiceController extends PrestaShopAdminController
 
             $command = new EditOrderInvoiceCommand(
                 $orderInvoiceId,
-                $data['paymentMethod'],
-                $data['paymentTerm'],
+                $data['paymentMethod'] ? OrderInvoicePaymentMethod::from($data['paymentMethod']) : null,
+                $data['paymentTerm'] ? OrderInvoicePaymentTerm::from($data['paymentTerm']) : null,
                 $data['amountType'],
                 (float)$data['amount'],
                 $data['shippingDate'],
