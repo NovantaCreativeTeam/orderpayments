@@ -126,8 +126,15 @@
   "order_payment_download": {
     "tokens": [
       [
+        "variable",
+        "\/",
+        "\\d+",
+        "documentId",
+        true
+      ],
+      [
         "text",
-        "\/download"
+        "\/document"
       ],
       [
         "variable",
@@ -143,7 +150,7 @@
       [
         "variable",
         "\/",
-        "[^\/]++",
+        "\\d+",
         "orderId",
         true
       ],
@@ -154,7 +161,9 @@
     ],
     "defaults": [],
     "requirements": {
-      "paymentId": "\\d+"
+      "orderId": "\\d+",
+      "paymentId": "\\d+",
+      "documentId": "\\d+"
     },
     "hosttokens": [],
     "methods": [

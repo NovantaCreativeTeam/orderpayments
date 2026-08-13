@@ -29,8 +29,9 @@ const api = {
     return axios.delete(url).then(response => response.data);
   },
 
-  download(paymentId) {
-    return window.prestashop.instance.router.generate('order_payment_download', { paymentId });
+  download(orderId, paymentId, documentId) {
+    const url = window.prestashop.instance.router.generate('order_payment_download', { 'orderId': orderId, 'paymentId': paymentId, 'documentId': documentId });
+    return axios.get(url, {responseType: 'blob'})
   }
 };
 

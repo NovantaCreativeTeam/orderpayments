@@ -31,7 +31,7 @@
           <h4 class="modal-title">
             {{ translations.modal_title }}
           </h4>
-          <button type="button" class="close" data-dismiss="modal">
+          <button type="button" class="close" @click="hideModal">
             <i class="material-icons">close</i>
           </button>
         </div>
@@ -102,6 +102,7 @@ export default {
       $(this.$el).modal("show");
     },
     hideModal() {
+      this.$emit("leave");
       $(this.$el).modal("hide");
     },
     onSave() {

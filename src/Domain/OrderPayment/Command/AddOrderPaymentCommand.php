@@ -33,6 +33,7 @@ use PrestaShop\PrestaShop\Core\Domain\Employee\ValueObject\EmployeeId;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\NegativePaymentAmountException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Adds payment for given order.
@@ -65,7 +66,7 @@ class AddOrderPaymentCommand
     private $paymentMethod;
 
     /**
-     * @var DecimalNumber
+     * @var float
      */
     private $paymentAmount;
 
@@ -90,37 +91,42 @@ class AddOrderPaymentCommand
     protected $employeeId;
 
     /**
+     * @var UploadedFile|null
+     */
+    private $file;
+
+    /**
      * @param int $orderId
      * @param string $paymentDate
      * @param string $paymentMethod
-     * @param string $paymentAmount
+     * @param float $paymentAmount
      * @param int $paymentCurrencyId
      * @param int $employeeId
      * @param int|null $orderInvoiceId
      * @param string|null $transactionId transaction ID, usually payment ID from payment gateway
+     * @param UploadedFile|null $file
      */
     public function __construct(
         int $orderId,
         string $paymentDate,
         string $paymentMethod,
-        string $paymentAmount,
+        float $paymentAmount,
         int $paymentCurrencyId,
         int $employeeId,
         ?int $orderInvoiceId = null,
-        ?string $transactionId = null
+        ?string $transactionId = null,
+        ?UploadedFile $file = null
     ) {
-        $amount = new DecimalNumber($paymentAmount);
-        $this->assertAmountIsPositive($amount);
-        $this->assertPaymentMethodIsGenericName($paymentMethod);
 
         $this->orderId = new OrderId($orderId);
         $this->paymentDate = new DateTimeImmutable($paymentDate);
         $this->paymentMethod = $paymentMethod;
-        $this->paymentAmount = $amount;
+        $this->paymentAmount = $paymentAmount;
         $this->paymentCurrencyId = new CurrencyId($paymentCurrencyId);
         $this->employeeId = new EmployeeId($employeeId);
         $this->orderInvoiceId = $orderInvoiceId;
         $this->transactionId = $transactionId;
+        $this->file = $file;
     }
 
     /**
@@ -148,7 +154,7 @@ class AddOrderPaymentCommand
     }
 
     /**
-     * @return DecimalNumber
+     * @return float
      */
     public function getPaymentAmount()
     {
@@ -185,6 +191,14 @@ class AddOrderPaymentCommand
     public function getPaymentTransactionId()
     {
         return $this->transactionId;
+    }
+
+    /**
+     * @return UploadedFile|null
+     */
+    public function getFile(): ?UploadedFile
+    {
+        return $this->file;
     }
 
     /**

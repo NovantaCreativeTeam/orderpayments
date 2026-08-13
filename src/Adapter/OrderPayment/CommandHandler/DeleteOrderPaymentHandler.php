@@ -8,6 +8,9 @@ use Novanta\OrderPayment\Domain\OrderPayment\Command\DeleteOrderPayment;
 use Novanta\OrderPayment\Domain\OrderPayment\CommandHandler\DeleteOrderPaymentHandlerInterface;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentNotFoundException;
+use Novanta\OrderPayment\Entity\OrderPaymentDocument;
+use Novanta\OrderCharging\Domain\OrderDocument\Command\DeleteOrderDocument;
+use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
 use Validate;
 
@@ -18,10 +21,14 @@ use Validate;
 class DeleteOrderPaymentHandler implements DeleteOrderPaymentHandlerInterface
 {
     private EntityManagerInterface $entityManager;
+    private CommandBusInterface $commandBus;
 
-    public function __construct(EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        CommandBusInterface $commandBus
+    ) {
         $this->entityManager = $entityManager;
+        $this->commandBus = $commandBus;
     }
 
     /**
@@ -66,6 +73,19 @@ class DeleteOrderPaymentHandler implements DeleteOrderPaymentHandlerInterface
                     \Tools::convertPrice($amountInDefaultCurrency, $order->id_currency, true)
                 );
             }
+        }
+
+        // Cancellazione OrderDocument se associato
+        /** @var OrderPaymentDocument $orderPaymentDocument */
+        $orderPaymentDocument = $this->entityManager->getRepository(OrderPaymentDocument::class)->findOneBy(['orderPaymentId' => $orderPayment->id]);
+        if ($orderPaymentDocument) {
+            $this->commandBus->handle(new DeleteOrderDocument(
+                (int)$order->id,
+                (int)$orderPaymentDocument->getOrderDocumentId()
+            ));
+
+            $this->entityManager->remove($orderPaymentDocument);
+            $this->entityManager->flush();
         }
 
         // Cancellazione collegamento con fatture

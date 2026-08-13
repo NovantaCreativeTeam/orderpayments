@@ -125,17 +125,6 @@ export default {
   computed: {
     ...mapGetters(["invoices"]),
   },
-  watch: {
-    payment: {
-      handler(newVal) {
-        this.formData = {...newVal};
-        if (this.formData.date && this.formData.date.includes('T')) {
-          this.formData.date = moment(this.formData.date).format('DD/MM/YYYY');
-        }
-      },
-      deep: true
-    }
-  },
   methods: {
     handleFileUpload(files) {
       if (files && files.length > 0) {
@@ -148,11 +137,27 @@ export default {
     onSubmit() {
       this.$emit('submit')
       this.isLoading = true;
+
+      const formData = new FormData();
+      if (this.formData.id) {
+        formData.append('id', this.formData.id);
+      }
+      formData.append('amount', this.formData.amount);
+      formData.append('paymentMethod', this.formData.paymentMethod);
+
+      formData.append('date', this.formData.date ? moment(this.formData.date, 'DD/MM/YYYY').format('YYYY-MM-DD') : null)
+      formData.append('transactionId', this.formData.transactionId || '');
+      formData.append('orderInvoiceId', this.formData.invoiceId || 0);
+
+      if (this.formData.document) {
+        formData.append('document', this.formData.document);
+      }
+
       let promise = Promise.resolve();
       if (this.formData.id) {
-        promise = orderPaymentApi.update(id_order, this.formData.id, this.formData)
+        promise = orderPaymentApi.update(id_order, this.formData.id, formData)
       } else {
-        promise = orderPaymentApi.create(id_order, this.formData)
+        promise = orderPaymentApi.create(id_order, formData)
       }
 
       promise.then(response => {
@@ -170,11 +175,6 @@ export default {
       }).finally(() => {
         this.isLoading = false
       })
-
-      // if (this.formData.document) {
-      //   data.append('document', this.formData.document);
-      // }
-
     },
   }
 };

@@ -67,7 +67,7 @@ class GetOrderPaymentsHandler implements GetOrderPaymentsHandlerInterface
         $paymentsData = [];
 
         foreach ($payments as $payment) {
-            $doc = $this->repository->findOneBy(['orderPaymentId' => $payment->id]);
+            $document = $this->repository->findOneBy(['orderPaymentId' => $payment->id]);
             /** @var \OrderInvoice $invoice */
             $invoice = $payment->getOrderInvoice($order->id);
             
@@ -81,8 +81,7 @@ class GetOrderPaymentsHandler implements GetOrderPaymentsHandlerInterface
                 $invoice ? (int)$invoice->id : null,
                 $invoice ? $invoice->getInvoiceNumberFormatted($this->languageId) : null,
                 $employee ? new EmployeeForViewing((int)$employee->id, $employee->firstname, $employee->lastname) : null,
-                $doc ? $doc->getOriginalFilename() : null,
-                $doc ? $doc->getOrderPaymentId() : null,
+                $document ? $document->getOrderDocumentId() : null,
                 $payment->date_add
             );
         }

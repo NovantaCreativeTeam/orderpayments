@@ -26,6 +26,7 @@
 
 namespace Novanta\OrderPayment\Controller\Admin;
 
+use Novanta\OrderCharging\Domain\OrderDocument\Query\DownloadOrderDocument;
 use Novanta\OrderPayment\Domain\OrderPayment\Command\AddOrderPaymentCommand;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
 use Novanta\OrderPayment\Domain\OrderPayment\Query\GetOrderPayments;
@@ -96,8 +97,9 @@ class OrderPaymentController extends PrestaShopAdminController
         $date = $request->request->get('date');
         $transactionId = $request->request->get('transactionId');
         $currencyId = $this->getCurrencyContext()->getId();
-        $invoiceId = $request->request->get('orderInvoiceId`');
+        $invoiceId = $request->request->get('orderInvoiceId');
         $employeeId = $this->getEmployeeContext()->getEmployee()->getId();
+        $file = $request->files->get('document');
 
         try {
             $this->dispatchCommand(new AddOrderPaymentCommand(
@@ -107,8 +109,9 @@ class OrderPaymentController extends PrestaShopAdminController
                 (string) $amount,
                 (int) $currencyId,
                 (int) $employeeId,
-                $invoiceId,
-                $transactionId
+                $invoiceId ? (int) $invoiceId : null,
+                $transactionId,
+                $file
             ));
 
             return $this->json(['success' => true]);
@@ -132,6 +135,7 @@ class OrderPaymentController extends PrestaShopAdminController
         $currencyId = $this->getCurrencyContext()->getId();
         $invoiceId = $request->request->get('invoiceId');
         $employeeId = $this->getEmployeeContext()->getEmployee()->getId();
+        $file = $request->files->get('document') ?? null;
 
         try {
             $this->dispatchCommand(new EditOrderPayment(
@@ -142,7 +146,8 @@ class OrderPaymentController extends PrestaShopAdminController
                 (int) $currencyId,
                 (int) $employeeId,
                 $invoiceId ? (int) $invoiceId : null,
-                $transactionId
+                $transactionId,
+                $file
             ));
 
             return $this->json(['success' => true]);
@@ -154,19 +159,6 @@ class OrderPaymentController extends PrestaShopAdminController
     public function deleteAction(int $paymentId)
     {
         try {
-            // Delete associated document
-//            $repository = $this->get('Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository');
-//            $doc = $repository->findOneBy(['orderPaymentId' => $paymentId]);
-//            if ($doc) {
-//                $filePath = $this->getParameter('kernel.project_dir') . '/upload/orderpayment/' . $doc->getFilename();
-//                if (file_exists($filePath)) {
-//                    unlink($filePath);
-//                }
-//                $em = $this->get('doctrine.orm.entity_manager');
-//                $em->remove($doc);
-//                $em->flush();
-//            }
-
             $this->dispatchCommand(new DeleteOrderPayment($paymentId));
 
             return $this->json(['success' => true]);
@@ -175,28 +167,31 @@ class OrderPaymentController extends PrestaShopAdminController
         }
     }
 
-    public function downloadAction(int $paymentId)
+    public function downloadAction(int $orderId, int $paymentId, int $documentId)
     {
-        $repository = $this->get('Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository');
-        $doc = $repository->findOneBy(['orderPaymentId' => $paymentId]);
-        
-        if (!$doc) {
-            throw $this->createNotFoundException('Document not found');
+        try {
+            // $orderInvoice = $orderInvoiceRepository->getOrderInvoiceDocument(new OrderInvoiceId($orderInvoiceId), $documentId);
+
+            $query = new DownloadOrderDocument($orderId, $documentId);
+            $documentData = $this->dispatchQuery($query);
+
+            $response = new Response($documentData['content']);
+
+            $disposition = $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $documentData['filename']
+            );
+
+            $response->headers->set('Content-Disposition', $disposition);
+            $response->headers->set('Content-Type', $documentData['mime']);
+
+            return $response;
+        } catch (\Exception $e) {
+            return $this->json(
+                ['message' => $this->getErrorMessageForException($e, $this->getErrorMessages($e))],
+                $this->getHttpErrorCode($e)
+            );
         }
-
-        $filePath = $this->getParameter('kernel.project_dir') . '/upload/orderpayment/' . $doc->getFilename();
-        
-        if (!file_exists($filePath)) {
-            throw $this->createNotFoundException('File not found');
-        }
-
-        $response = new BinaryFileResponse($filePath);
-        $response->setContentDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $doc->getOriginalFilename()
-        );
-
-        return $response;
     }
 
     private function getErrorMessages(\Exception $e): array

@@ -47,12 +47,14 @@ order_payment_delete:
     expose: true
 
 order_payment_download:
-  path: /{orderId}/payment/{paymentId}/download
+  path: /{orderId}/payment/{paymentId}/document/{documentId}
   methods: [GET]
   defaults:
     _controller: Novanta\OrderPayment\Controller\Admin\OrderPaymentController::downloadAction
   requirements:
+    orderId: \d+
     paymentId: \d+
+    documentId: \d+
   options:
     expose: true
 

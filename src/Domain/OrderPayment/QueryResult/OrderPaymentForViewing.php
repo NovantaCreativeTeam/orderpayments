@@ -23,7 +23,7 @@ namespace Novanta\OrderPayment\Domain\OrderPayment\QueryResult;
 use JsonSerializable;
 use Novanta\OrderPayment\Domain\OrderInvoice\QueryResult\OrderInvoiceForViewing;
 
-class OrderPaymentForViewing
+class OrderPaymentForViewing implements JsonSerializable
 {
     /** @var int */
     private $id;
@@ -43,9 +43,6 @@ class OrderPaymentForViewing
     /** @var EmployeeForViewing|null */
     private $employee;
 
-    /** @var string|null */
-    private $document;
-
     /** @var int|null */
     private $documentId;
 
@@ -61,7 +58,6 @@ class OrderPaymentForViewing
         ?int                $orderInvoiceId,
         ?string             $orderInvoiceNumber,
         ?EmployeeForViewing $employee,
-        ?string             $document,
         ?int                $documentId,
         string              $date
     ) {
@@ -72,7 +68,6 @@ class OrderPaymentForViewing
         $this->orderInvoiceId = $orderInvoiceId;
         $this->orderInvoiceNumber = $orderInvoiceNumber;
         $this->employee = $employee;
-        $this->document = $document;
         $this->documentId = $documentId;
         $this->date = $date;
     }
@@ -107,14 +102,24 @@ class OrderPaymentForViewing
         return $this->employee;
     }
 
-    public function getDocument(): ?string
-    {
-        return $this->document;
-    }
-
     public function getDocumentId(): ?int
     {
         return $this->documentId;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'amount' => $this->amount,
+            'method' => $this->method,
+            'transactionId' => $this->transactionId,
+            'orderInvoiceId' => $this->orderInvoiceId,
+            'orderInvoiceNumber' => $this->orderInvoiceNumber,
+            'employee' => $this->employee,
+            'documentId' => $this->documentId,
+            'date' => $this->date,
+        ];
     }
 
     public function getDate(): string

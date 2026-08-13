@@ -47,11 +47,13 @@
                 {{ trans('edit') }}</a>
               <a class="dropdown-item" @click="$refs.deleteModal.showModal(); orderPaymentToDelete = payment"><i
                   class="material-icons">delete</i> {{ trans('delete') }}</a>
+              <a class="dropdown-item" v-if="payment.documentId" @click="downloadDocument(payment.id, payment.documentId)"><i
+                  class="material-icons">download</i> {{ trans('download') }}</a>
             </div>
           </td>
         </tr>
         <tr v-if="payments.length === 0">
-          <td colspan="7" class="text-center">{{ trans('no_payments_found') }}</td>
+          <td colspan="8" class="text-center">{{ trans('no_payments_found') }}</td>
         </tr>
         </tbody>
       </PSTable>
@@ -63,7 +65,7 @@
     </template>
 
     <!-- Add/Edit Payment Modal -->
-    <PSModal :translations="modalTranslations" ref="paymentModal">
+    <PSModal :translations="modalTranslations" ref="paymentModal" @leave="orderPaymentToEdit = null">
       <OrderPaymentForm
           v-if="orderPaymentToEdit && Object.keys(orderPaymentToEdit).length > 0"
           :payment="orderPaymentToEdit"
@@ -89,6 +91,7 @@ import PSTable from "../widgets/ps-table/ps-table.vue";
 import EventBus from "../utils/event-bus";
 import {mapGetters} from "vuex";
 import moment from "moment/moment";
+import FileDownload from "js-file-download";
 
 export default {
   name: 'OrderPaymentApp',
@@ -190,9 +193,23 @@ export default {
         this.isSubmitting = false;
       })
     },
-    getDownloadUrl(paymentId) {
-      return api.download(paymentId);
-    }
+    downloadDocument(paymentId, documentId) {
+      api.download(id_order, paymentId, documentId)
+          .then((response) => {
+            let filename = ''
+            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+            const matches = filenameRegex.exec(response.headers["content-disposition"])
+
+            if (matches != null && matches[1]) {
+              filename = matches[1].replace(/['"]/g, '')
+            }
+
+            FileDownload(response.data, filename)
+          })
+          .catch((error) => {
+            $.growl.error({message: error.response?.data?.message || error.message})
+          })
+    },
   }
 };
 </script>

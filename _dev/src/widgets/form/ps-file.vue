@@ -1,5 +1,6 @@
 <template>
   <Field :rules="validationRules" :name="name ?? label" v-slot="{ errors, meta }">
+    {{modelValue}}
     <div class="form-group"
          :class="{'row': horizontal, 'has-success': meta.valid && validationRules != null, 'has-danger': meta.touched && !meta.valid}">
       <label v-if="label" class="form-control-label" :for="id" :class="{'col-sm-3': horizontal}">{{ label }}</label>
@@ -18,7 +19,7 @@
           />
 
           <label class="custom-file-label">
-            {{ modelValue ? modelValue.name : trans('choose_file') }}
+            {{ fileName ?? trans('choose_file') }}
           </label>
         </div>
 
@@ -57,13 +58,20 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      fileName: this.modelValue ? this.modelValue.name : null
+    }
+  },
   methods: {
     onInput(validate, event) {
       validate()
+      this.fileName = event.currentTarget.files[0].name
       this.$emit('update:modelValue', event.currentTarget.value)
     },
     onChange(validate, event) {
       validate()
+      this.fileName = event.currentTarget.files[0].name
       this.$emit('change', event.target.files)
     }
   },

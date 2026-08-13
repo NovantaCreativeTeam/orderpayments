@@ -9,7 +9,11 @@ use Novanta\OrderPayment\Domain\OrderPayment\Command\EditOrderPayment;
 use Novanta\OrderPayment\Domain\OrderPayment\CommandHandler\EditOrderPaymentHandlerInterface;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentNotFoundException;
+use Novanta\OrderPayment\Entity\OrderPaymentDocument;
+use Novanta\OrderCharging\Domain\OrderDocument\Command\DeleteOrderDocument;
+use Novanta\OrderCharging\Domain\OrderDocument\Command\UploadDocumentToOrder;
 use OrderInvoice;
+use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
 use PrestaShop\PrestaShop\Core\Domain\Currency\Exception\CurrencyNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderNotFoundException;
@@ -24,10 +28,14 @@ class EditOrderPaymentHandler implements EditOrderPaymentHandlerInterface
 {
 
     private EntityManagerInterface $entityManager;
+    private CommandBusInterface $commandBus;
 
-    public function __construct(EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        CommandBusInterface $commandBus
+    ) {
         $this->entityManager = $entityManager;
+        $this->commandBus = $commandBus;
     }
 
     /**
@@ -96,6 +104,34 @@ class EditOrderPaymentHandler implements EditOrderPaymentHandlerInterface
             throw new OrderPaymentException(
                 sprintf('Failed to update OrderPayment object with id "%s".', $orderPaymentId)
             );
+        }
+
+        if ($command->getFile()) {
+            /** @var OrderPaymentDocument $orderPaymentDocument */
+            $orderPaymentDocument = $this->entityManager->getRepository(OrderPaymentDocument::class)->findOneBy(['orderPaymentId' => $orderPayment->id]);
+
+            if ($orderPaymentDocument) {
+                $this->commandBus->handle(new DeleteOrderDocument(
+                    (int) $order->id,
+                    (int) $orderPaymentDocument->getOrderDocumentId()
+                ));
+            }
+
+            $documentId = $this->commandBus->handle(new UploadDocumentToOrder(
+                (int) $order->id,
+                $command->getFile(),
+                [], // localizedNames
+                []  // localizeDescriptions
+            ));
+
+            if (!$orderPaymentDocument) {
+                $orderPaymentDocument = new OrderPaymentDocument();
+                $orderPaymentDocument->setOrderPaymentId($orderPayment->id);
+                $this->entityManager->persist($orderPaymentDocument);
+            }
+
+            $orderPaymentDocument->setOrderDocumentId((string) $documentId);
+            $this->entityManager->flush();
         }
 
         if ($command->getOrderInvoiceId()) {

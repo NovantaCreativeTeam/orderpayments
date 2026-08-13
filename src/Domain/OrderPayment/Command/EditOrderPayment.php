@@ -3,6 +3,7 @@
 namespace Novanta\OrderPayment\Domain\OrderPayment\Command;
 
 use DateTimeImmutable;
+use Symfony\Component\HttpFoundation\File\File;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
 use Novanta\OrderPayment\Domain\OrderPayment\ValueObject\OrderPaymentId;
 use PrestaShop\Decimal\DecimalNumber;
@@ -67,6 +68,11 @@ class EditOrderPayment
     private $transactionId;
 
     /**
+     * @var File|null
+     */
+    private $file;
+
+    /**
      * @param int $orderPaymentId
      * @param string $paymentDate
      * @param string $paymentMethod
@@ -75,6 +81,7 @@ class EditOrderPayment
      * @param int $employeeId
      * @param int|null $orderInvoiceId
      * @param string|null $transactionId
+     * @param File|null $file
      *
      * @throws OrderPaymentException
      */
@@ -86,7 +93,8 @@ class EditOrderPayment
         int $paymentCurrencyId,
         int $employeeId,
         ?int $orderInvoiceId = null,
-        ?string $transactionId = null
+        ?string $transactionId = null,
+        ?File $file = null
     ) {
         $amount = new DecimalNumber($paymentAmount);
         $this->assertAmountIsPositive($amount);
@@ -100,6 +108,7 @@ class EditOrderPayment
         $this->employeeId = new EmployeeId($employeeId);
         $this->orderInvoiceId = $orderInvoiceId;
         $this->transactionId = $transactionId;
+        $this->file = $file;
     }
 
     /**
@@ -164,6 +173,14 @@ class EditOrderPayment
     public function getTransactionId(): ?string
     {
         return $this->transactionId;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getFile(): ?File
+    {
+        return $this->file;
     }
 
     /**

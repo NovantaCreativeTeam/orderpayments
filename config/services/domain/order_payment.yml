@@ -9,6 +9,7 @@ services:
     arguments:
       - '@Novanta\OrderPayment\Repository\OrderPaymentDocumentRepository'
       - "@=service('prestashop.adapter.legacy.context').getContext().language.id"
+      - '@doctrine.orm.entity_manager'
     autoconfigure: true
 
   # ============== Commands
@@ -17,14 +18,18 @@ services:
     class: 'Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\EditOrderPaymentHandler'
     arguments:
       - '@doctrine.orm.entity_manager'
+      - '@prestashop.core.command_bus'
     autoconfigure: true
 
   Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\DeleteOrderPaymentHandler:
     class: 'Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\DeleteOrderPaymentHandler'
     arguments:
       - '@doctrine.orm.entity_manager'
+      - '@prestashop.core.command_bus'
     autoconfigure: true
 
   Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\AddOrderPaymentHandler:
     class: 'Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\AddOrderPaymentHandler'
+    arguments:
+      - '@prestashop.core.command_bus'
     autoconfigure: true
