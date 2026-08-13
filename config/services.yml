@@ -1,6 +1,7 @@
 imports:
   - { resource: services/controller/*.yml }
   - { resource: services/domain/*.yml }
+  - { resource: services/pdf/*.yml }
   - { resource: services/repository/*.yml }
   - { resource: services/translation/*.yml }
 

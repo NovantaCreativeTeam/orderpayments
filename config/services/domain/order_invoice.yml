@@ -17,6 +17,11 @@ services:
     class: 'Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\AddOrderInvoiceHandler'
     arguments:
       - '@prestashop.adapter.legacy.configuration'
+      - '@Novanta\OrderPayment\Adapter\PDF\OrderInvoiceProformaPdfGenerator'
+      - '@prestashop.adapter.context_state_manager'
+      - '@prestashop.core.admin.lang.repository'
+      - '@prestashop.core.command_bus'
+      - '@Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository'
     autoconfigure: true
 
   Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\DeleteOrderInvoiceHandler:
@@ -25,4 +30,11 @@ services:
 
   Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\EditOrderInvoiceHandler:
     class: 'Novanta\OrderPayment\Adapter\OrderInvoice\CommandHandler\EditOrderInvoiceHandler'
+    arguments:
+      - '@prestashop.adapter.legacy.configuration'
+      - '@Novanta\OrderPayment\Adapter\PDF\OrderInvoiceProformaPdfGenerator'
+      - '@prestashop.adapter.context_state_manager'
+      - '@prestashop.core.admin.lang.repository'
+      - '@prestashop.core.command_bus'
+      - '@Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository'
     autoconfigure: true

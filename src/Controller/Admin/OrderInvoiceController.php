@@ -3,6 +3,8 @@
 namespace Novanta\OrderPayment\Controller\Admin;
 
 use Novanta\OrderCharging\Domain\OrderCharging\Exception\OrderInvoiceNotFoundException;
+use Novanta\OrderCharging\Domain\OrderDocument\Query\DownloadOrderDocument;
+use Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository;
 use Novanta\OrderPayment\Domain\OrderInvoice\Command\AddOrderInvoiceCommand;
 use Novanta\OrderPayment\Domain\OrderInvoice\Command\DeleteOrderInvoiceCommand;
 use Novanta\OrderPayment\Domain\OrderInvoice\Command\EditOrderInvoiceCommand;
@@ -11,10 +13,13 @@ use Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentTerm;
 use Novanta\OrderPayment\Domain\OrderInvoice\Query\GetOrderInvoices;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderNotFoundException;
+use PrestaShop\PrestaShop\Core\Domain\Order\Invoice\ValueObject\OrderInvoiceId;
 use PrestaShopBundle\Controller\Admin\PrestaShopAdminController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class OrderInvoiceController extends PrestaShopAdminController
 {
@@ -34,7 +39,7 @@ class OrderInvoiceController extends PrestaShopAdminController
                 $data['paymentTerm'] ? OrderInvoicePaymentTerm::from($data['paymentTerm']) : null,
                 $data['amountType'],
                 (float)$data['amount'],
-                $data['shippingDate'],
+                $data['deliveryDate'],
                 $data['note'] ?? null
             );
 
@@ -101,6 +106,37 @@ class OrderInvoiceController extends PrestaShopAdminController
             return $this->json([
                 'message' => $this->getErrorMessageForException($e, $this->getErrorMessages($e))
             ], $this->getHttpErrorCode($e));
+        }
+    }
+
+    public function downloadAction(
+        int $orderInvoiceId,
+        int $documentId,
+        #[Autowire(service: 'Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository')] OrderInvoiceRepository $orderInvoiceRepository,
+    ) {
+        try {
+
+            $orderInvoice = $orderInvoiceRepository->getOrderInvoiceDocument(new OrderInvoiceId($orderInvoiceId), $documentId);
+
+            $query = new DownloadOrderDocument($orderInvoice['id_order'], $orderInvoice['id_order_document']);
+            $documentData = $this->dispatchQuery($query);
+
+            $response = new Response($documentData['content']);
+
+            $disposition = $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $documentData['filename']
+            );
+
+            $response->headers->set('Content-Disposition', $disposition);
+            $response->headers->set('Content-Type', $documentData['mime']);
+
+            return $response;
+        } catch (\Exception $e) {
+            return $this->json(
+                ['message' => $this->getErrorMessageForException($e, $this->getErrorMessages($e))],
+                $this->getHttpErrorCode($e)
+            );
         }
     }
 

@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    public: true
+
+  Novanta\OrderPayment\Adapter\PDF\OrderInvoiceProformaPdfGenerator:
+    class: 'Novanta\OrderPayment\Adapter\PDF\OrderInvoiceProformaPdfGenerator'
+    arguments:
+      - '@Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository'

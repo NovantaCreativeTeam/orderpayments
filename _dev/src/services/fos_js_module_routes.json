@@ -335,5 +335,53 @@
       "DELETE"
     ],
     "schemes": []
+  },
+  "order_invoice_download": {
+    "tokens": [
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "documentId",
+        true
+      ],
+      [
+        "text",
+        "\/document"
+      ],
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderInvoiceId",
+        true
+      ],
+      [
+        "text",
+        "\/invoice"
+      ],
+      [
+        "variable",
+        "\/",
+        "\\d+",
+        "orderId",
+        true
+      ],
+      [
+        "text",
+        "\/modules\/order"
+      ]
+    ],
+    "defaults": [],
+    "requirements": {
+      "orderId": "\\d+",
+      "orderInvoiceId": "\\d+",
+      "documentId": "\\d+"
+    },
+    "hosttokens": [],
+    "methods": [
+      "GET"
+    ],
+    "schemes": []
   }
 }

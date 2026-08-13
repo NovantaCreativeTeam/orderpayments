@@ -22,6 +22,7 @@ class ComposerStaticInitb800add994a92f7d689da9f3195272d8
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'HTMLTemplateInvoiceProforma' => __DIR__ . '/../..' . '/src/Adapter/PDF/HTMLTemplateInvoiceProforma.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

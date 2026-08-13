@@ -2,7 +2,10 @@
     "autoload": {
         "psr-4": {
             "Novanta\\OrderPayment\\": "src/"
-        }
+        },
+        "classmap": [
+            "src/Adapter/PDF/HTMLTemplateInvoiceProforma.php"
+        ]
     },
     "config": {
         "prepend-autoloader": false

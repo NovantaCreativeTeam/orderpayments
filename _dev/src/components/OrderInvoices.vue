@@ -30,6 +30,7 @@
                 {{ trans('edit') }}</a>
               <a class="dropdown-item" @click="$refs.deleteModal.showModal(); orderInvoiceToDelete = invoice"><i
                   class="material-icons">delete</i> {{ trans('delete') }}</a>
+              <a class="dropdown-item" v-if="invoice.orderDocumentId" @click="downloadInvoice(invoice.id, invoice.orderDocumentId)"><i class="material-icons">download</i> {{ trans('download') }}</a>
             </div>
           </td>
         </tr>
@@ -74,6 +75,7 @@ import moment from "moment";
 import PSButton from "../widgets/ps-button.vue";
 import api from "../services/orderInvoice.api";
 import OrderInvoiceForm from "./OrderInvoiceForm.vue";
+import FileDownload from "js-file-download";
 
 export default {
   name: "OrderInvoicesApp",
@@ -146,6 +148,23 @@ export default {
       }).finally(() => {
         this.isSubmitting = false;
       })
+    },
+    downloadInvoice(orderInvoiceId, documentId) {
+      api.download(id_order, orderInvoiceId, documentId)
+          .then((response) => {
+            let filename = ''
+            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+            const matches = filenameRegex.exec(response.headers["content-disposition"])
+
+            if (matches != null && matches[1]) {
+              filename = matches[1].replace(/['"]/g, '')
+            }
+
+            FileDownload(response.data, filename)
+          })
+          .catch((error) => {
+            $.growl.error({message: error.response?.data?.message || error.message})
+          })
     },
   }
 }

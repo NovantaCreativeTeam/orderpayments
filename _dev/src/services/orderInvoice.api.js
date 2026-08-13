@@ -29,8 +29,9 @@ const orderInvoiceApi = {
     return axios.delete(url).then(response => response.data);
   },
 
-  download(orderInvoiceId) {
-    return window.prestashop.instance.router.generate('order_invoice_download', { orderInvoiceId });
+  download(orderId, orderInvoiceId, documentId) {
+    const url = window.prestashop.instance.router.generate('order_invoice_download', { 'orderId': orderId, 'orderInvoiceId': orderInvoiceId, 'documentId': documentId });
+    return axios.get(url, {responseType: 'blob'})
   }
 };
 

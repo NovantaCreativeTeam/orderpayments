@@ -43,6 +43,7 @@ class OrderInvoiceForViewing
     /** @var string */
     private $dateAdd;
     private ?string $deliveryDate;
+    private ?int $orderDocumentId;
 
     public function __construct(
         int     $id,
@@ -55,7 +56,8 @@ class OrderInvoiceForViewing
         ?float  $totalPaidTaxIncluded,
         ?float  $totalToPay,
         ?string $dateAdd,
-        ?string $deliveryDate
+        ?string $deliveryDate,
+        ?int $orderDocumentId
     ) {
         $this->id = $id;
         $this->number = $number;
@@ -68,6 +70,7 @@ class OrderInvoiceForViewing
         $this->note = $note;
         $this->totalToPay = $totalToPay;
         $this->deliveryDate = $deliveryDate;
+        $this->orderDocumentId = $orderDocumentId;
     }
 
     public function getId(): int
@@ -141,5 +144,10 @@ class OrderInvoiceForViewing
     public function getDeliveryDate(): ?string
     {
         return $this->deliveryDate;
+    }
+
+    public function getOrderDocumentId(): ?int
+    {
+        return $this->orderDocumentId;
     }
 }

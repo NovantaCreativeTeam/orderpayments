@@ -49,3 +49,15 @@ order_invoice_delete:
       orderInvoiceId: \d+
   options:
     expose: true
+
+order_invoice_download:
+  path: /{orderId}/invoice/{orderInvoiceId}/document/{documentId}
+  methods: [GET]
+  defaults:
+    _controller: Novanta\OrderPayment\Controller\Admin\OrderInvoiceController::downloadAction
+  requirements:
+    orderId: \d+
+    orderInvoiceId: \d+
+    documentId: \d+
+  options:
+    expose: true

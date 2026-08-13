@@ -74,7 +74,7 @@ class GetOrderInvoicesHandler implements GetOrderInvoicesHandlerInterface
 
             $invoicesData[] = new OrderInvoiceForViewing(
                 (int)$invoice['id_order_invoice'],
-                $orderInvoice->getInvoiceNumberFormatted($this->languageId), // ToDo: utilizzare la funzione getInvoiceNumberFormatted della classe ORderInvoice per formattare correttamente il numero
+                $orderInvoice->getInvoiceNumberFormatted($this->languageId),
                 $invoice['payment_method'],
                 $invoice['payment_term'],
                 $invoice['amount_type'],
@@ -84,6 +84,7 @@ class GetOrderInvoicesHandler implements GetOrderInvoicesHandlerInterface
                 $totalToPay,
                 $invoice['date_add'],
                 $invoice['delivery_date'],
+                $invoice['id_order_document']
             );
         }
 

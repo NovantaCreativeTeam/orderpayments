@@ -26,6 +26,7 @@
 
 use Novanta\OrderPayment\Adapter\Install\InstallerFactory;
 use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
+use PrestaShop\PrestaShop\Core\Domain\Order\Invoice\ValueObject\OrderInvoiceId;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -122,6 +123,19 @@ class OrderPayments extends \Module
                     'badge_type_field' => 'payment_status',
                 ])
         );
+    }
+
+    public function hookDisplayPDFInvoice($hookArgs)
+    {
+        $orderInvoice = $hookArgs['object'];
+        $orderInvoiceProforma = SymfonyContainer::getInstance()->get('Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository')->get(new OrderInvoiceId($orderInvoice->id_order_invoice));
+
+        return ['invoiceProforma'=> [
+           'payment_method' => $orderInvoiceProforma['payment_method'],
+           'payment_term' => $orderInvoiceProforma['payment_term'],
+           'amount_type' => $orderInvoiceProforma['amount_type'],
+           'amount' => $orderInvoiceProforma['amount'],
+        ]];
     }
 
     /**

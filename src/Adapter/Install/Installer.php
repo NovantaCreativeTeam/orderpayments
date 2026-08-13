@@ -127,6 +127,7 @@ class Installer
             'actionOrderGridDefinitionModifier',
             'actionOrderGridQueryBuilderModifier',
             'actionAdminControllerSetMedia',
+            'displayPDFInvoice'
         ];
 
         return $module->registerHook($hooks);
