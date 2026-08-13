@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    public: true
+
+  novanta.orderpayment.grid.definition.factory.order_payment:
+    class: 'Novanta\OrderPayment\Grid\Definition\Factory\OrderPaymentDefinitionFactory'
+    parent: 'prestashop.core.grid.definition.factory.abstract_grid_definition'

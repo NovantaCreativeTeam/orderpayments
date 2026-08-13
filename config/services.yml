@@ -4,4 +4,5 @@ imports:
   - { resource: services/pdf/*.yml }
   - { resource: services/repository/*.yml }
   - { resource: services/translation/*.yml }
+  - { resource: services/grid/*.yml }
 

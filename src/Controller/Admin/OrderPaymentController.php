@@ -27,6 +27,7 @@
 namespace Novanta\OrderPayment\Controller\Admin;
 
 use Novanta\OrderCharging\Domain\OrderDocument\Query\DownloadOrderDocument;
+use Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository;
 use Novanta\OrderPayment\Domain\OrderPayment\Command\AddOrderPaymentCommand;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
 use Novanta\OrderPayment\Domain\OrderPayment\Query\GetOrderPayments;
@@ -35,6 +36,7 @@ use Novanta\OrderPayment\Domain\OrderPayment\Command\EditOrderPayment;
 use Novanta\OrderPayment\Domain\OrderPayment\Command\DeleteOrderPayment;
 use PrestaShop\PrestaShop\Core\Domain\Order\Payment\Command\AddPaymentCommand;
 use PrestaShopBundle\Controller\Admin\PrestaShopAdminController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,11 +47,39 @@ use Db;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+use Novanta\OrderPayment\Search\Filters\OrderPaymentFilters;
+use Novanta\OrderPayment\Grid\Definition\Factory\OrderPaymentDefinitionFactory;
+
 class OrderPaymentController extends PrestaShopAdminController
 {
-    public function indexAction()
+
+    public function indexAction(
+        Request $request,
+        OrderPaymentFilters $filters,
+        #[Autowire(service: 'novanta.orderpayment.grid.order_payment_grid_factory')] $gridFactory)
     {
-        return 'OrderPaymentController - index Action';
+        $grid = $gridFactory->getGrid($filters);
+
+        return $this->render(
+            '@Modules/orderpayments/views/templates/admin/order_payment/grid.html.twig',
+            [
+                'layoutTitle' => $this->trans('Order Payments', [], 'Modules.Orderpayments.Admin'),
+                'orderPaymentGrid' => $this->presentGrid($grid),
+            ]
+        );
+    }
+
+    public function searchAction(Request $request)
+    {
+        /** @var \PrestaShopBundle\Component\Grid\ResponseBuilder $responseBuilder */
+        $responseBuilder = $this->get('prestashop.bundle.grid.response_builder');
+
+        return $responseBuilder->buildSearchResponse(
+            $this->get('novanta.orderpayment.grid.definition.factory.order_payment'),
+            $request,
+            OrderPaymentDefinitionFactory::GRID_ID,
+            'admin_order_payments_index'
+        );
     }
 
     /**
@@ -156,10 +186,10 @@ class OrderPaymentController extends PrestaShopAdminController
         }
     }
 
-    public function deleteAction(int $paymentId)
+    public function deleteAction(int $orderPaymentId)
     {
         try {
-            $this->dispatchCommand(new DeleteOrderPayment($paymentId));
+            $this->dispatchCommand(new DeleteOrderPayment($orderPaymentId));
 
             return $this->json(['success' => true]);
         } catch (\Exception $e) {

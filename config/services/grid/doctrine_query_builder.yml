@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    public: true
+
+  novanta.orderpayment.grid.query.order_payment_query_builder:
+    class: 'Novanta\OrderPayment\Grid\Query\OrderPaymentQueryBuilder'
+    parent: 'prestashop.core.grid.abstract_query_builder'
+    arguments:
+      - '@prestashop.core.query.doctrine_search_criteria_applicator'

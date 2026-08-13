@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    public: true
+
+  novanta.orderpayment.grid.order_payment_grid_factory:
+    class: 'PrestaShop\PrestaShop\Core\Grid\GridFactory'
+    arguments:
+      - '@novanta.orderpayment.grid.definition.factory.order_payment'
+      - '@novanta.orderpayment.grid.data.factory.order_payment_data_factory_decorator'
+      - '@prestashop.core.grid.filter.form_factory'
+      - '@PrestaShop\PrestaShop\Core\Hook\HookDispatcher'

@@ -1,0 +1,17 @@
+services:
+  _defaults:
+    public: true
+
+  novanta.orderpayment.grid.data.factory.order_payment_doctrine_data_factory:
+    class: 'PrestaShop\PrestaShop\Core\Grid\Data\Factory\DoctrineGridDataFactory'
+    arguments:
+      - '@novanta.orderpayment.grid.query.order_payment_query_builder'
+      - '@PrestaShop\PrestaShop\Core\Hook\HookDispatcher'
+      - '@prestashop.core.grid.query.doctrine_query_parser'
+      - 'order_payments'
+
+  novanta.orderpayment.grid.data.factory.order_payment_data_factory_decorator:
+    class: 'Novanta\OrderPayment\Grid\Data\Factory\OrderPaymentGridDataFactoryDecorator'
+    arguments:
+      - '@novanta.orderpayment.grid.data.factory.order_payment_doctrine_data_factory'
+      - '@=service("PrestaShop\\PrestaShop\\Core\\Localization\\Locale\\Repository").getLocale(service("PrestaShop\\PrestaShop\\Adapter\\LegacyContext").getContext().language.getLocale())'
