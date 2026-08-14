@@ -20,6 +20,7 @@
 
 namespace Novanta\OrderPayment\Adapter\OrderPayment\QueryHandler;
 
+use DateTime;
 use Novanta\OrderPayment\Domain\OrderInvoice\QueryResult\OrderInvoiceForViewing;
 use Novanta\OrderPayment\Domain\OrderPayment\Query\GetOrderPayments;
 use Novanta\OrderPayment\Domain\OrderPayment\QueryHandler\GetOrderPaymentsHandlerInterface;
@@ -82,7 +83,7 @@ class GetOrderPaymentsHandler implements GetOrderPaymentsHandlerInterface
                 $invoice ? $invoice->getInvoiceNumberFormatted($this->languageId) : null,
                 $employee ? new EmployeeForViewing((int)$employee->id, $employee->firstname, $employee->lastname) : null,
                 $document ? $document->getOrderDocumentId() : null,
-                $payment->date_add
+                new DateTime($payment->date_add)
             );
         }
 

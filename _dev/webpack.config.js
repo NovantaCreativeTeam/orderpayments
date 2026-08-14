@@ -6,7 +6,9 @@ const FileManagerPlugin = require('filemanager-webpack-plugin');
 module.exports = (env, argv) => {
   const config = {
     entry: {
-      'order.payments': './src/index.js'
+      'order.payments': './src/index.js',
+      'orderpayments.grid': './src/orderpayments.grid.js',
+      'orderinvoices.grid': './src/orderinvoices.grid.js',
     },
     output: {
       path: path.resolve(__dirname, 'dist'),

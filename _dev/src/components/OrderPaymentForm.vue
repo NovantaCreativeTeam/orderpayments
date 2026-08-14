@@ -11,7 +11,7 @@
     <slot>
       <form @submit.prevent="handleSubmit(onSubmit)">
       <PSInput
-          label="Amount"
+          :label="trans('amount')"
           type="number"
           prepend="€"
           v-model="formData.amount"
@@ -19,26 +19,26 @@
       />
 
       <PSSelect
-          label="Payment Method"
+          :label="trans('payment_method')"
           v-model="formData.paymentMethod"
           :items="availablePaymentMethods"
           validationRules="required"
       />
 
       <PSDatepicker
-          label="Date"
+          :label="trans('payment_date')"
           v-model="formData.date"
           id="payment_date"
           validationRules="required"
       />
 
       <PSInput
-          label="Transaction ID"
+          :label="trans('transaction_id')"
           v-model="formData.transactionId"
       />
 
       <PSSelect
-          label="Invoice"
+          :label="trans('invoice')"
           v-model="formData.invoiceId"
           id="payment_invoice"
           :items="invoices"
@@ -46,7 +46,7 @@
 
       />
 
-      <PSFile label="Document" id="payment_document" @change="handleFileUpload"/>
+      <PSFile :label="trans('payment_document')" id="payment_document" @change="handleFileUpload"/>
 
       <div class="actions mt-3">
         <PsSpinner v-if="isLoading"/>
@@ -108,7 +108,7 @@ export default {
       default: () => ({
         amount: 0,
         paymentMethod: '',
-        date: moment().format('DD/MM/YYYY'),
+        date: moment(),
         transactionId: '',
         invoiceId: 0,
         document: null
@@ -145,7 +145,7 @@ export default {
       formData.append('amount', this.formData.amount);
       formData.append('paymentMethod', this.formData.paymentMethod);
 
-      formData.append('date', this.formData.date ? moment(this.formData.date, 'DD/MM/YYYY').format('YYYY-MM-DD') : null)
+      formData.append('date', this.formData.date)
       formData.append('transactionId', this.formData.transactionId || '');
       formData.append('orderInvoiceId', this.formData.invoiceId || 0);
 

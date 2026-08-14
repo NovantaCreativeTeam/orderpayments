@@ -20,6 +20,7 @@
 
 namespace Novanta\OrderPayment\Domain\OrderPayment\QueryResult;
 
+use DateTime;
 use JsonSerializable;
 use Novanta\OrderPayment\Domain\OrderInvoice\QueryResult\OrderInvoiceForViewing;
 
@@ -46,7 +47,6 @@ class OrderPaymentForViewing implements JsonSerializable
     /** @var int|null */
     private $documentId;
 
-    /** @var string */
     private $date;
     private ?int $orderInvoiceId;
 
@@ -59,7 +59,7 @@ class OrderPaymentForViewing implements JsonSerializable
         ?string             $orderInvoiceNumber,
         ?EmployeeForViewing $employee,
         ?int                $documentId,
-        string              $date
+        ?DateTime              $date
     ) {
         $this->id = $id;
         $this->amount = $amount;
@@ -122,7 +122,7 @@ class OrderPaymentForViewing implements JsonSerializable
         ];
     }
 
-    public function getDate(): string
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }

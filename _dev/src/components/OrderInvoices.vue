@@ -5,11 +5,11 @@
       <PSTable>
         <thead>
         <tr>
-          <th>{{ trans('date') }}</th>
+          <th>{{ trans('invoice_date') }}</th>
           <th>{{ trans('invoice_number') }}</th>
           <th>{{ trans('payment_method') }}</th>
-          <th>{{ trans('payment_term') }}</th>
-          <th>{{ trans('total_to_pay') }}</th>
+          <th>{{ trans('payment_term') }}</th>r
+          <th>{{ trans('invoice_total') }}</th>
           <th>{{ trans('total_paid') }}</th>
           <th></th>
         </tr>
@@ -19,7 +19,7 @@
           <td>{{ $filters.formatDate(invoice.dateAdd) }}</td>
           <td>{{ invoice.number }}</td>
           <td>{{ invoice.paymentMethod ? trans(invoice.paymentMethod) : '---' }}</td>
-          <td>{{ trans(invoice.paymentTerm) }} <span v-if="invoice.paymentTerm !== 'total'">{{ invoice.amount || '---'}}</span><span v-if="invoice.paymentTerm !== 'total' && invoice.amount > 0">{{ invoice.amountType === 'percentage' ? '%' : invoice.currencyIsoCode + ''}}</span></td>
+          <td>{{ trans(invoice.paymentTerm) }} <span v-if="invoice.paymentTerm !== 'total'">{{ invoice.amount || '---'}}</span><span v-if="invoice.paymentTerm !== 'total' && invoice.amount > 0">{{ invoice.amountType === 'percentage' ? '%' : '€'}}</span></td>
           <td>{{ $filters.formatCurrency(invoice.totalToPay) }}</td>
           <td><span class="badge" :class="{ 'badge-danger': invoice.totalPaidTaxIncluded === 0, 'badge-success': invoice.totalPaidTaxIncluded === invoice.totalToPay, 'badge-warning': invoice.totalPaidTaxIncluded > 0 && invoice.totalPaidTaxIncluded !== invoice.totalToPay }">{{ $filters.formatCurrency(invoice.totalPaidTaxIncluded) }}</span></td>
           <td>

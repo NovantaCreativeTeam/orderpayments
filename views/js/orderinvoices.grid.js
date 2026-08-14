@@ -1,0 +1,1 @@
+(0,window.$)(()=>{const n=new window.prestashop.component.Grid("order_invoices");n.addExtension(new window.prestashop.component.GridExtensions.FiltersResetExtension),n.addExtension(new window.prestashop.component.GridExtensions.SortingExtension)});

@@ -6,5 +6,6 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('../modules/orderpayments/views/js/orderpayments.grid.js') }}" async defer></script>
     <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
 {% endblock %}

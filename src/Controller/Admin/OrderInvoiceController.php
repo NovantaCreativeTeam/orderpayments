@@ -42,13 +42,14 @@ class OrderInvoiceController extends PrestaShopAdminController
         );
     }
 
-    public function searchAction(Request $request)
+    public function searchAction(
+        Request $request,
+        #[Autowire(service: 'prestashop.bundle.grid.response_builder')] $responseBuilder,
+        #[Autowire(service: 'novanta.orderpayment.grid.definition.factory.order_invoice')] $gridFactory
+    )
     {
-        /** @var \PrestaShopBundle\Component\Grid\ResponseBuilder $responseBuilder */
-        $responseBuilder = $this->get('prestashop.bundle.grid.response_builder');
-
         return $responseBuilder->buildSearchResponse(
-            $this->get('novanta.orderpayment.grid.definition.factory.order_invoice'),
+            $gridFactory,
             $request,
             OrderInvoiceDefinitionFactory::GRID_ID,
             'admin_order_invoices_index'

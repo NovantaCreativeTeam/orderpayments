@@ -54,42 +54,18 @@ export default {
         },
     },
     data() {
-        let date = this.modelValue;
-        // Se il valore è una stringa, proviamo a interpretarla come ISO o Date string standard
-        // moment(undefined) o moment(null) ritorna un Invalid Date object (non letteralmente null)
-        let initialDate = date ? moment(date) : null;
-
-        return {
-            dateValue: (initialDate && initialDate.isValid()) ? initialDate.format('DD/MM/YYYY') : null
-        }
-    },
-    watch: {
-        modelValue(newVal) {
-            let initialDate = newVal ? moment(newVal, 'DD/MM/YYYY') : null;
-            if (initialDate && initialDate.isValid()) {
-                let formatted = initialDate.format('DD/MM/YYYY');
-                if (this.dateValue !== formatted) {
-                    this.dateValue = formatted;
-                    $(this.$refs.datepicker).data('DateTimePicker').date(formatted);
-                }
-            } else if (!newVal) {
-                this.dateValue = null;
-                $(this.$refs.datepicker).data('DateTimePicker').date(null);
-            }
-        }
+      return {
+        dateValue: this.modelValue
+      }
     },
     mounted() {
         $(this.$refs.datepicker).datetimepicker({
             format: 'DD/MM/YYYY',
-            date: this.dateValue,
+            date: this.modelValue,
             locale: window.full_language_code
         }).on('dp.change', (infos) => {
-            var current_date = infos.date ? infos.date.format('DD/MM/YYYY') : ""
-            if(this.dateValue != current_date)
-            {
-                this.dateValue = current_date
-                this.$emit('update:modelValue', current_date)
-            }
+            this.dateValue = infos.date.format('DD/MM/YYYY')
+            this.$emit('update:modelValue', infos.date.format())
         });
     },
     components: {

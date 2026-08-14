@@ -10,34 +10,48 @@
     </PsAlert>
     <slot>
       <form @submit.prevent="handleSubmit(onSubmit)">
-        <PSSelect
-            label="Payment Method"
-            v-model="formData.paymentMethod"
-            :items="availablePaymentMethods"
-            validationRules="required"
-        />
+        <div class="row">
+          <div class="col-md-6">
+            <PSSelect
+                label="Payment Method"
+                v-model="formData.paymentMethod"
+                :items="availablePaymentMethods"
+                validationRules="required"
+            />
+          </div>
+          <div class="col-md-6">
+            <PSSelect
+                label="Payment Term"
+                v-model="formData.paymentTerm"
+                :items="availablePaymentTerms"
+                validationRules="required"
+            />
+          </div>
+        </div>
 
-        <PSSelect
-            label="Payment Term"
-            v-model="formData.paymentTerm"
-            :items="availablePaymentTerms"
-            validationRules="required"
-        />
+        <div class="row">
+          <div class="col-md-6">
+            <PSSelect
+                label="Amount Type"
+                v-model="formData.amountType"
+                id="amount_type"
+                :items="amountTypeOptions"
+                v-if="formData.paymentTerm === 'advance' || formData.paymentTerm === 'down'"
+            />
+          </div>
+          <div class="col-md-6">
+            <PSInput
+                label="Amount"
+                type="number"
+                v-model="formData.amount"
+                v-if="formData.paymentTerm === 'advance' || formData.paymentTerm === 'down'"
+            />
+          </div>
+        </div>
 
-        <PSSelect
-            label="Amount Type"
-            v-model="formData.amountType"
-            id="amount_type"
-            :items="amountTypeOptions"
-            v-if="formData.paymentTerm === 'advance' || formData.paymentTerm === 'down'"
-        />
 
-        <PSInput
-            label="Amount"
-            type="number"
-            v-model="formData.amount"
-            v-if="formData.paymentTerm === 'advance' || formData.paymentTerm === 'down'"
-        />
+
+
 
         <PSDatepicker
             label="Delivery Date"
@@ -149,8 +163,6 @@ export default {
       const payload = {
           ...this.formData,
       };
-
-      payload.deliveryDate = payload.deliveryDate ? moment(payload.deliveryDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;
 
       if (this.formData.id) {
         promise = orderInvoiceApi.update(id_order, this.formData.id, payload)

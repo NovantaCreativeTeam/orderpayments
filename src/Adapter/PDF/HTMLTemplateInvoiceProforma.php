@@ -122,10 +122,12 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
 
         $payment_description = $this->contextStateManager->getContext()->getTranslator()->trans('Order', [], 'Admin.Global') . ' ' . $this->order->reference;
         if($this->orderInvoice['payment_term'] === \Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentTerm::ADVANCE->value) {
-            $payment_description .= ' - ' . $this->contextStateManager->getContext()->getTranslator()->trans('Andvance', [], 'Admin.Global');
+            $payment_description .= ' - ' . $this->contextStateManager->getContext()->getTranslator()->trans('Advance', [], 'Admin.Global');
         } elseif($this->orderInvoice['payment_term'] === \Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentTerm::DOWN->value) {
-            $payment_description .= ' - ' . $this->contextStateManager->getContext()->getTranslator()->trans('Andvance', [], 'Admin.Global');
+            $payment_description .= ' - ' . $this->contextStateManager->getContext()->getTranslator()->trans('Down', [], 'Admin.Global');
         }
+
+
 
         $orderInvoiceObj = new OrderInvoice($this->orderInvoice['id_order_invoice']);
 

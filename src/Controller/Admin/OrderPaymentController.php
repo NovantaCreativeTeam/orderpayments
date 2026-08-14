@@ -186,10 +186,10 @@ class OrderPaymentController extends PrestaShopAdminController
         }
     }
 
-    public function deleteAction(int $paymentId)
+    public function deleteAction(int $orderPaymentId)
     {
         try {
-            $this->dispatchCommand(new DeleteOrderPayment($paymentId));
+            $this->dispatchCommand(new DeleteOrderPayment($orderPaymentId));
 
             return $this->json(['success' => true]);
         } catch (\Exception $e) {

@@ -47,7 +47,7 @@ final class OrderInvoiceDefinitionFactory extends AbstractGridDefinitionFactory
                 ])
             )
             ->add((new DateTimeColumn('date_add'))
-                ->setName($this->trans('Date', [], 'Admin.Global'))
+                ->setName($this->trans('Invoice Date', [], 'Admin.Global'))
                 ->setOptions([
                     'field' => 'date_add',
                     'format' => 'd/m/Y H:i:s',
