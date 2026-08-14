@@ -7,3 +7,9 @@ services:
     parent: 'prestashop.core.grid.abstract_query_builder'
     arguments:
       - '@prestashop.core.query.doctrine_search_criteria_applicator'
+
+  novanta.orderpayment.grid.query.order_invoice_query_builder:
+    class: 'Novanta\OrderPayment\Grid\Query\OrderInvoiceQueryBuilder'
+    parent: 'prestashop.core.grid.abstract_query_builder'
+    arguments:
+      - '@prestashop.core.query.doctrine_search_criteria_applicator'

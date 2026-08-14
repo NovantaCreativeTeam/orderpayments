@@ -5,3 +5,7 @@ services:
   novanta.orderpayment.grid.definition.factory.order_payment:
     class: 'Novanta\OrderPayment\Grid\Definition\Factory\OrderPaymentDefinitionFactory'
     parent: 'prestashop.core.grid.definition.factory.abstract_grid_definition'
+
+  novanta.orderpayment.grid.definition.factory.order_invoice:
+    class: 'Novanta\OrderPayment\Grid\Definition\Factory\OrderInvoiceDefinitionFactory'
+    parent: 'prestashop.core.grid.definition.factory.abstract_grid_definition'

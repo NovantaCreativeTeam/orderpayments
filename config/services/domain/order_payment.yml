@@ -19,6 +19,7 @@ services:
     arguments:
       - '@doctrine.orm.entity_manager'
       - '@prestashop.core.command_bus'
+      - '@Novanta\OrderPayment\Adapter\OrderPayment\Repository\OrderPaymentRepository'
     autoconfigure: true
 
   Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\DeleteOrderPaymentHandler:
@@ -26,10 +27,12 @@ services:
     arguments:
       - '@doctrine.orm.entity_manager'
       - '@prestashop.core.command_bus'
+      - '@Novanta\OrderPayment\Adapter\OrderPayment\Repository\OrderPaymentRepository'
     autoconfigure: true
 
   Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\AddOrderPaymentHandler:
     class: 'Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler\AddOrderPaymentHandler'
     arguments:
       - '@prestashop.core.command_bus'
+      - '@Novanta\OrderPayment\Adapter\OrderPayment\Repository\OrderPaymentRepository'
     autoconfigure: true

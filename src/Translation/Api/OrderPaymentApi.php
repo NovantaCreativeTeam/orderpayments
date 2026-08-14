@@ -64,10 +64,10 @@ class OrderPaymentApi extends AbstractApi
 
             'card' => $this->translator->trans('Card', [], 'Modules.Orderpayments.Admin'),
             'paypal' => $this->translator->trans('PayPal', [], 'Modules.Orderpayments.Admin'),
-            'wirepayment' => $this->translator->trans('Wire payment', [], 'Modules.Orderpayments.Admin'),
+            'wirepayment' => $this->translator->trans('Wire Payment', [], 'Modules.Orderpayments.Admin'),
             'satispay' => $this->translator->trans('Satispay', [], 'Modules.Orderpayments.Admin'),
             'cash' => $this->translator->trans('Cash', [], 'Modules.Orderpayments.Admin'),
-            'advance' => $this->translator->trans('Andvance', [], 'Modules.Orderpayments.Admin'),
+            'advance' => $this->translator->trans('Advance', [], 'Modules.Orderpayments.Admin'),
             'down' => $this->translator->trans('Down', [], 'Modules.Orderpayments.Admin'),
             'total' => $this->translator->trans('Total', [], 'Modules.Orderpayments.Admin'),
 

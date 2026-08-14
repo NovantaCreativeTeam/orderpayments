@@ -9,3 +9,11 @@ services:
       - '@novanta.orderpayment.grid.data.factory.order_payment_data_factory_decorator'
       - '@prestashop.core.grid.filter.form_factory'
       - '@PrestaShop\PrestaShop\Core\Hook\HookDispatcher'
+
+  novanta.orderpayment.grid.order_invoice_grid_factory:
+    class: 'PrestaShop\PrestaShop\Core\Grid\GridFactory'
+    arguments:
+      - '@novanta.orderpayment.grid.definition.factory.order_invoice'
+      - '@novanta.orderpayment.grid.data.factory.order_invoice_data_factory_decorator'
+      - '@prestashop.core.grid.filter.form_factory'
+      - '@PrestaShop\PrestaShop\Core\Hook\HookDispatcher'

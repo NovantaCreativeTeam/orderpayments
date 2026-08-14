@@ -21,11 +21,38 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+use Novanta\OrderPayment\Search\Filters\OrderInvoiceFilters;
+use Novanta\OrderPayment\Grid\Definition\Factory\OrderInvoiceDefinitionFactory;
+
 class OrderInvoiceController extends PrestaShopAdminController
 {
-    public function indexAction()
+    public function indexAction(
+        Request $request,
+        OrderInvoiceFilters $filters,
+        #[Autowire(service: 'novanta.orderpayment.grid.order_invoice_grid_factory')] $gridFactory)
     {
-        return 'OrderInvoiceController - Index Action';
+        $grid = $gridFactory->getGrid($filters);
+
+        return $this->render(
+            '@Modules/orderpayments/views/templates/admin/order_invoice/grid.html.twig',
+            [
+                'layoutTitle' => $this->trans('Order Invoices', [], 'Modules.Orderpayments.Admin'),
+                'orderInvoiceGrid' => $this->presentGrid($grid),
+            ]
+        );
+    }
+
+    public function searchAction(Request $request)
+    {
+        /** @var \PrestaShopBundle\Component\Grid\ResponseBuilder $responseBuilder */
+        $responseBuilder = $this->get('prestashop.bundle.grid.response_builder');
+
+        return $responseBuilder->buildSearchResponse(
+            $this->get('novanta.orderpayment.grid.definition.factory.order_invoice'),
+            $request,
+            OrderInvoiceDefinitionFactory::GRID_ID,
+            'admin_order_invoices_index'
+        );
     }
 
     public function addAction(int $orderId, Request $request): JsonResponse

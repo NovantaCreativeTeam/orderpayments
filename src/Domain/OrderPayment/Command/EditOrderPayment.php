@@ -89,21 +89,19 @@ class EditOrderPayment
         int $orderPaymentId,
         string $paymentDate,
         string $paymentMethod,
-        string $paymentAmount,
+        float $paymentAmount,
         int $paymentCurrencyId,
         int $employeeId,
         ?int $orderInvoiceId = null,
         ?string $transactionId = null,
         ?File $file = null
     ) {
-        $amount = new DecimalNumber($paymentAmount);
-        $this->assertAmountIsPositive($amount);
         $this->assertPaymentMethodIsGenericName($paymentMethod);
 
         $this->orderPaymentId = new OrderPaymentId($orderPaymentId);
         $this->paymentDate = new DateTimeImmutable($paymentDate);
         $this->paymentMethod = $paymentMethod;
-        $this->paymentAmount = $amount;
+        $this->paymentAmount = $paymentAmount;
         $this->paymentCurrencyId = new CurrencyId($paymentCurrencyId);
         $this->employeeId = new EmployeeId($employeeId);
         $this->orderInvoiceId = $orderInvoiceId;
@@ -138,7 +136,7 @@ class EditOrderPayment
     /**
      * @return DecimalNumber
      */
-    public function getPaymentAmount(): DecimalNumber
+    public function getPaymentAmount()
     {
         return $this->paymentAmount;
     }

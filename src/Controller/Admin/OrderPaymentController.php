@@ -163,7 +163,7 @@ class OrderPaymentController extends PrestaShopAdminController
         $date = $request->request->get('date');
         $transactionId = $request->request->get('transactionId');
         $currencyId = $this->getCurrencyContext()->getId();
-        $invoiceId = $request->request->get('invoiceId');
+        $invoiceId = $request->request->get('orderInvoiceId');
         $employeeId = $this->getEmployeeContext()->getEmployee()->getId();
         $file = $request->files->get('document') ?? null;
 
@@ -186,10 +186,10 @@ class OrderPaymentController extends PrestaShopAdminController
         }
     }
 
-    public function deleteAction(int $orderPaymentId)
+    public function deleteAction(int $paymentId)
     {
         try {
-            $this->dispatchCommand(new DeleteOrderPayment($orderPaymentId));
+            $this->dispatchCommand(new DeleteOrderPayment($paymentId));
 
             return $this->json(['success' => true]);
         } catch (\Exception $e) {

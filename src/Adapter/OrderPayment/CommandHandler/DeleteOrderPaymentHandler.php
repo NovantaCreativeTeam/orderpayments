@@ -4,14 +4,18 @@ namespace Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler;
 
 use Currency;
 use Doctrine\ORM\EntityManagerInterface;
+use Novanta\OrderPayment\Adapter\OrderPayment\Repository\OrderPaymentRepository;
 use Novanta\OrderPayment\Domain\OrderPayment\Command\DeleteOrderPayment;
 use Novanta\OrderPayment\Domain\OrderPayment\CommandHandler\DeleteOrderPaymentHandlerInterface;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentNotFoundException;
 use Novanta\OrderPayment\Entity\OrderPaymentDocument;
 use Novanta\OrderCharging\Domain\OrderDocument\Command\DeleteOrderDocument;
+use OrderInvoice;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
+use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderException;
+use PrestaShop\PrestaShop\Core\Domain\Order\Invoice\ValueObject\OrderInvoiceId;
 use Validate;
 
 /**
@@ -22,13 +26,16 @@ class DeleteOrderPaymentHandler implements DeleteOrderPaymentHandlerInterface
 {
     private EntityManagerInterface $entityManager;
     private CommandBusInterface $commandBus;
+    private OrderPaymentRepository $orderPaymentRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        CommandBusInterface $commandBus
+        CommandBusInterface $commandBus,
+        OrderPaymentRepository $orderPaymentRepository
     ) {
         $this->entityManager = $entityManager;
         $this->commandBus = $commandBus;
+        $this->orderPaymentRepository = $orderPaymentRepository;
     }
 
     /**
@@ -88,10 +95,20 @@ class DeleteOrderPaymentHandler implements DeleteOrderPaymentHandlerInterface
             $this->entityManager->flush();
         }
 
-        // Cancellazione collegamento con fatture
+        $orderInvoiceIds = $this->entityManager->getConnection()
+            ->prepare('SELECT id_order_invoice FROM `' . _DB_PREFIX_ . 'order_invoice_payment` WHERE id_order_payment = :id_order_payment')
+            ->executeQuery([ 'id_order_payment' => $orderPayment->id])
+            ->fetchFirstColumn();
+
         $this->entityManager->getConnection()
             ->prepare('DELETE FROM `' . _DB_PREFIX_ . 'order_invoice_payment` WHERE id_order_payment = :id_order_payment')
-            ->executeStatement(['id_order_payment' => $orderPayment->id]);
+            ->executeStatement([ 'id_order_payment' => $orderPayment->id]);
+
+        if( !empty( $orderInvoiceIds )) {
+            foreach ($orderInvoiceIds as $orderInvoiceId) {
+                $this->setInvoiceTotalPaid($orderInvoiceId);
+            }
+        }
 
         // Cancellazione pagamento
         if (false === $orderPayment->delete()) {
@@ -106,5 +123,21 @@ class DeleteOrderPaymentHandler implements DeleteOrderPaymentHandlerInterface
                 sprintf('Failed to update Order with reference "%s".', $orderPayment->order_reference)
             );
         }
+    }
+
+    protected function setInvoiceTotalPaid($orderInvoiceId): bool
+    {
+        $orderInvoice = new OrderInvoice($orderInvoiceId);
+        if (!Validate::isLoadedObject($orderInvoice)) {
+            throw new OrderException('The invoice is invalid.');
+        }
+
+        $invoicePayments = $this->orderPaymentRepository->getAllByInvoiceId(new OrderInvoiceId($orderInvoiceId));
+        $orderInvoice->total_paid_tax_incl = 0;
+        foreach ($invoicePayments as $invoicePayment) {
+            $orderInvoice->total_paid_tax_incl += $invoicePayment['amount'];
+        }
+
+        return $orderInvoice->update();
     }
 }

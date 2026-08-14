@@ -4,3 +4,9 @@ services:
     factory: ['@doctrine.orm.default_entity_manager', getRepository]
     arguments:
       - Novanta\OrderPayment\Entity\OrderPaymentDocument
+
+  Novanta\OrderPayment\Adapter\OrderPayment\Repository\OrderPaymentRepository:
+    class: Novanta\OrderPayment\Adapter\OrderPayment\Repository\OrderPaymentRepository
+    arguments:
+      - '@doctrine.dbal.default_connection'
+      - '%database_prefix%'

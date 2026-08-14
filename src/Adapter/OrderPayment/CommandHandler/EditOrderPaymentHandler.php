@@ -5,6 +5,7 @@ namespace Novanta\OrderPayment\Adapter\OrderPayment\CommandHandler;
 use Db;
 use Doctrine\ORM\EntityManagerInterface;
 use Novanta\OrderCharging\Domain\OrderCharging\Exception\OrderInvoiceNotFoundException;
+use Novanta\OrderPayment\Adapter\OrderPayment\Repository\OrderPaymentRepository;
 use Novanta\OrderPayment\Domain\OrderPayment\Command\EditOrderPayment;
 use Novanta\OrderPayment\Domain\OrderPayment\CommandHandler\EditOrderPaymentHandlerInterface;
 use Novanta\OrderPayment\Domain\OrderPayment\Exception\OrderPaymentException;
@@ -13,10 +14,13 @@ use Novanta\OrderPayment\Entity\OrderPaymentDocument;
 use Novanta\OrderCharging\Domain\OrderDocument\Command\DeleteOrderDocument;
 use Novanta\OrderCharging\Domain\OrderDocument\Command\UploadDocumentToOrder;
 use OrderInvoice;
+use OrderPayment;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
 use PrestaShop\PrestaShop\Core\Domain\Currency\Exception\CurrencyNotFoundException;
+use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderNotFoundException;
+use PrestaShop\PrestaShop\Core\Domain\Order\Invoice\ValueObject\OrderInvoiceId;
 use Validate;
 use Currency;
 
@@ -29,13 +33,16 @@ class EditOrderPaymentHandler implements EditOrderPaymentHandlerInterface
 
     private EntityManagerInterface $entityManager;
     private CommandBusInterface $commandBus;
+    private OrderPaymentRepository $orderPaymentRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        CommandBusInterface $commandBus
+        CommandBusInterface $commandBus,
+        OrderPaymentRepository $orderPaymentRepository
     ) {
         $this->entityManager = $entityManager;
         $this->commandBus = $commandBus;
+        $this->orderPaymentRepository = $orderPaymentRepository;
     }
 
     /**
@@ -64,7 +71,6 @@ class EditOrderPaymentHandler implements EditOrderPaymentHandlerInterface
             throw new CurrencyNotFoundException('The selected currency is invalid.');
         }
 
-        $orderPayment->amount = (string)$command->getPaymentAmount();
         $orderPayment->payment_method = $command->getPaymentMethod();
         $orderPayment->date_add = $command->getPaymentDate()->format('Y-m-d H:i:s');
         $orderPayment->id_currency = $currency->id;
@@ -79,25 +85,70 @@ class EditOrderPaymentHandler implements EditOrderPaymentHandlerInterface
         }
 
         if ($orderPayment->id_currency == $order->id_currency) {
-            $order->total_paid_real += $orderPayment->amount;
+            $order->total_paid_real -= $orderPayment->amount;
+            $order->total_paid_real += $command->getPaymentAmount();
         } else {
             $default_currency = Currency::getDefaultCurrencyId();
             if ($orderPayment->id_currency === $default_currency) {
-                $this->total_paid_real += \Tools::ps_round(
-                    \Tools::convertPrice((float)$orderPayment->amount, $order->id_currency, false)
-                );
+                $order->total_paid_real -= \Tools::ps_round(\Tools::convertPrice((float)$orderPayment->amount, $order->id_currency, false));
+                $order->total_paid_real += \Tools::ps_round(\Tools::convertPrice((float)$command->getPaymentAmount(), $order->id_currency, false));
             } else {
                 $amountInDefaultCurrency = \Tools::convertPrice((float)$orderPayment->amount, $orderPayment->id_currency, false);
-                $this->total_paid_real += \Tools::ps_round(
-                    \Tools::convertPrice($amountInDefaultCurrency, $order->id_currency, true)
-                );
+                $order->total_paid_real -= \Tools::ps_round(\Tools::convertPrice($amountInDefaultCurrency, $order->id_currency, true));
+
+                $amountInDefaultCurrency = \Tools::convertPrice((float)$command->getPaymentAmount(), $orderPayment->id_currency, false);
+                $order->total_paid_real += \Tools::ps_round(\Tools::convertPrice($amountInDefaultCurrency, $order->id_currency, true));
             }
         }
 
+        $orderPayment->amount = $command->getPaymentAmount();
         if (false === $orderPayment->update()) {
             throw new OrderPaymentException(
                 sprintf('Failed to update OrderPayment object with id "%s".', $orderPaymentId)
             );
+        }
+
+        if ($command->getOrderInvoiceId()) {
+            $invoice = new OrderInvoice($command->getOrderInvoiceId());
+            if(!Validate::isLoadedObject($invoice)) {
+                throw new OrderInvoiceNotFoundException(sprintf('Order Invoice with id "%s" cannot be found.', $command->getOrderInvoiceId()));
+            }
+
+            $orderInvoices =
+                $this->entityManager->getConnection()
+                    ->prepare('SELECT oip.* FROM `' . _DB_PREFIX_ . 'order_invoice_payment` oip WHERE oip.id_order_payment = :id_order_payment')
+                    ->executeQuery(['id_order_payment' => $orderPayment->id])
+                    ->fetchAllAssociative();
+
+            if (!empty($orderInvoices)) {
+                foreach ($orderInvoices as $orderInvoice) {
+                    $this->entityManager->getConnection()
+                        ->prepare('UPDATE `' . _DB_PREFIX_ . 'order_invoice_payment` SET id_order_invoice = :id_order_invoice WHERE id_order_payment = :id_order_payment')
+                        ->executeStatement(['id_order_invoice' => $command->getOrderInvoiceId(), 'id_order_payment' => $orderPayment->id]);
+                }
+            } else {
+                $this->entityManager->getConnection()
+                    ->prepare('INSERT INTO `' . _DB_PREFIX_ . 'order_invoice_payment` (`id_order_invoice`, `id_order_payment`, `id_order`) VALUES (:id_order_invoice, :id_order_payment, :id_order)')
+                    ->executeStatement(['id_order_invoice' => $command->getOrderInvoiceId(), 'id_order_payment' => $orderPayment->id, 'id_order' => $order->id]);
+            }
+
+            $this->setInvoiceTotalPaid($command->getOrderInvoiceId());
+
+        } else {
+            $orderInvoiceIds = $this->entityManager->getConnection()
+                ->prepare('SELECT id_order_invoice FROM `' . _DB_PREFIX_ . 'order_invoice_payment` WHERE id_order_payment = :id_order_payment')
+                ->executeQuery([ 'id_order_payment' => $orderPayment->id])
+                ->fetchFirstColumn();
+
+            $this->entityManager->getConnection()
+                ->prepare('DELETE FROM `' . _DB_PREFIX_ . 'order_invoice_payment` WHERE id_order_payment = :id_order_payment')
+                ->executeStatement([ 'id_order_payment' => $orderPayment->id]);
+
+            if( !empty( $orderInvoiceIds )) {
+                foreach ($orderInvoiceIds as $orderInvoiceId) {
+                    $this->setInvoiceTotalPaid($orderInvoiceId);
+                }
+            }
         }
 
         if (false === $order->update()) {
@@ -134,40 +185,22 @@ class EditOrderPaymentHandler implements EditOrderPaymentHandlerInterface
             $this->entityManager->flush();
         }
 
-        if ($command->getOrderInvoiceId()) {
 
-            $invoice = new OrderInvoice($command->getOrderInvoiceId());
-            if(!Validate::isLoadedObject($invoice)) {
-                throw new OrderInvoiceNotFoundException(sprintf('Order Invoice with id "%s" cannot be found.', $command->getOrderInvoiceId()));
-            }
+    }
 
-            $invoice->total_paid_tax_incl = $command->getPaymentAmount();
-            $invoice->update();
-
-            $orderInvoices =
-                $this->entityManager->getConnection()
-                    ->prepare('SELECT oip.* FROM `' . _DB_PREFIX_ . 'order_invoice_payment` oip WHERE oip.id_order_payment = :id_order_payment')
-                    ->executeQuery(['id_order_payment' => $orderPayment->id])
-                    ->fetchAllAssociative();
-
-            if (!empty($orderInvoices)) {
-                foreach ($orderInvoices as $orderInvoice) {
-                    $this->entityManager->getConnection()
-                        ->prepare('UPDATE `' . _DB_PREFIX_ . 'order_invoice_payment` SET id_order_invoice = :id_order_invoice WHERE id_order_payment = :id_order_payment')
-                        ->executeStatement(['id_order_invoice' => $command->getOrderInvoiceId(), 'id_order_payment' => $orderPayment->id]);
-
-
-                }
-            } else {
-                $this->entityManager->getConnection()
-                    ->prepare('INSERT INTO `' . _DB_PREFIX_ . 'order_invoice_payment` (`id_order_invoice`, `id_order_payment`, `id_order`) VALUES (:id_order_invoice, :id_order_payment, :id_order)')
-                    ->executeStatement(['id_order_invoice' => $command->getOrderInvoiceId(), 'id_order_payment' => $orderPayment->id, 'id_order' => $order->id]);
-            }
-        } else {
-            $this->entityManager->getConnection()
-                ->prepare('DELETE FROM `' . _DB_PREFIX_ . 'order_invoice_payment` WHERE id_order_payment = :id_order_payment')
-                ->executeStatement([ 'id_order_payment' => $orderPayment->id]);
+    protected function setInvoiceTotalPaid($orderInvoiceId): bool
+    {
+        $orderInvoice = new OrderInvoice($orderInvoiceId);
+        if (!Validate::isLoadedObject($orderInvoice)) {
+            throw new OrderException('The invoice is invalid.');
         }
 
+        $invoicePayments = $this->orderPaymentRepository->getAllByInvoiceId(new OrderInvoiceId($orderInvoiceId));
+        $orderInvoice->total_paid_tax_incl = 0;
+        foreach ($invoicePayments as $invoicePayment) {
+            $orderInvoice->total_paid_tax_incl += $invoicePayment['amount'];
+        }
+
+        return $orderInvoice->update();
     }
 }

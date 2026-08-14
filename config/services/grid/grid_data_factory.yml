@@ -15,3 +15,18 @@ services:
     arguments:
       - '@novanta.orderpayment.grid.data.factory.order_payment_doctrine_data_factory'
       - '@=service("PrestaShop\\PrestaShop\\Core\\Localization\\Locale\\Repository").getLocale(service("PrestaShop\\PrestaShop\\Adapter\\LegacyContext").getContext().language.getLocale())'
+
+  novanta.orderpayment.grid.data.factory.order_invoice_doctrine_data_factory:
+    class: 'PrestaShop\PrestaShop\Core\Grid\Data\Factory\DoctrineGridDataFactory'
+    arguments:
+      - '@novanta.orderpayment.grid.query.order_invoice_query_builder'
+      - '@PrestaShop\PrestaShop\Core\Hook\HookDispatcher'
+      - '@prestashop.core.grid.query.doctrine_query_parser'
+      - 'order_invoices'
+
+  novanta.orderpayment.grid.data.factory.order_invoice_data_factory_decorator:
+    class: 'Novanta\OrderPayment\Grid\Data\Factory\OrderInvoiceGridDataFactoryDecorator'
+    arguments:
+      - '@novanta.orderpayment.grid.data.factory.order_invoice_doctrine_data_factory'
+      - '@translator'
+      - '@=service("PrestaShop\\PrestaShop\\Core\\Localization\\Locale\\Repository").getLocale(service("PrestaShop\\PrestaShop\\Adapter\\LegacyContext").getContext().language.getLocale())'

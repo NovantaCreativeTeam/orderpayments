@@ -1,8 +1,16 @@
-order_invoice_index:
+admin_order_invoices_index:
   path: /invoices
   methods: [GET]
   defaults:
     _controller: Novanta\OrderPayment\Controller\Admin\OrderInvoiceController::indexAction
+    _legacy_controller: AdminOrderInvoices
+    _legacy_link: AdminOrderInvoices
+
+admin_order_invoices_search:
+  path: /invoices/search
+  methods: [POST]
+  defaults:
+    _controller: Novanta\OrderPayment\Controller\Admin\OrderInvoiceController::searchAction
     _legacy_controller: AdminOrderInvoices
     _legacy_link: AdminOrderInvoices
 
