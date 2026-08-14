@@ -8,7 +8,7 @@
           <th>{{ trans('invoice_date') }}</th>
           <th>{{ trans('invoice_number') }}</th>
           <th>{{ trans('payment_method') }}</th>
-          <th>{{ trans('payment_term') }}</th>r
+          <th>{{ trans('payment_term') }}</th>
           <th>{{ trans('invoice_total') }}</th>
           <th>{{ trans('total_paid') }}</th>
           <th></th>

@@ -19,6 +19,8 @@
  */
 
 
+use Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentMethod;
+use Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentTerm;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
 
@@ -140,6 +142,8 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
                 'date_add' => (new DateTime($this->orderInvoice['date_add']))->format(\Context::getContext()->language->date_format_lite),
                 'payment_method' => $this->orderInvoice['payment_method'],
                 'payment_term' => $this->orderInvoice['payment_term'],
+                'payment_method_description' => OrderInvoicePaymentMethod::tryFrom($this->orderInvoice['payment_method']) ? $this->contextStateManager->getContext()->getTranslator()->trans($this->orderInvoice['payment_method'], [], 'Modules.Orderpayments.Admin') : $this->orderInvoice['payment_method'],
+                'payment_term_description' => OrderInvoicePaymentTerm::tryFrom($this->orderInvoice['payment_term']) ? $this->contextStateManager->getContext()->getTranslator()->trans($this->orderInvoice['payment_term'], [], 'Modules.Orderpayments.Admin') : $this->orderInvoice['payment_term'],
                 'payment_description' => $payment_description,
                 'amount_type' => $this->orderInvoice['amount_type'],
                 'amount' => $this->orderInvoice['amount'],

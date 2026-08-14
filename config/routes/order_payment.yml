@@ -7,7 +7,7 @@ admin_order_payments_index:
     _legacy_link: AdminOrderPayments
 
 admin_order_payments_search:
-  path: /payments/search
+  path: /payments
   methods: [POST]
   defaults:
     _controller: Novanta\OrderPayment\Controller\Admin\OrderPaymentController::searchAction

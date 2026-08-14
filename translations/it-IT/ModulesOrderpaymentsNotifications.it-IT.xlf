@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesOrderpaymentsNotifications.xlf" source-language="it-IT" target-language="it-IT" datatype="plaintext">
+    <body>
+      <trans-unit id="199e02007bff896109135134508cff19">
+        <source>Invoice saved successfully</source>
+        <target>Fattura salvata con successo</target>
+      </trans-unit>
+      <trans-unit id="b1da48682c65d12f6dd9098cb5b25ec8">
+        <source>Operation performed correctly</source>
+        <target>Operazione eseguita con successo</target>
+      </trans-unit>
+      <trans-unit id="aaef5161826c87863660f4bc64746bcf">
+        <source>Ops... Something went wrong, refresh page and try again</source>
+        <target>Ops... Qualcosa è andato storto, ricarica la pagina e prova ancora</target>
+      </trans-unit>
+      <trans-unit id="3884e0bd89cfc4f439ccb26d6c118ec0">
+        <source>Payment saved successfully</source>
+        <target>Pagamento salvato con successo</target>
+      </trans-unit>
+      <trans-unit id="0511ee0d41117aa7b4abaaf102aa513d">
+        <source>This field is required</source>
+        <target>Questo campo è obbligatorio</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

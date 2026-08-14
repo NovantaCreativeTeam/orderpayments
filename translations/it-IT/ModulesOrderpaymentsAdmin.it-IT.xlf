@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesOrderpaymentsAdmin.xlf" source-language="it-IT" target-language="it-IT" datatype="plaintext">
+    <body>
+      <trans-unit id="c856f38a5fd15e76973731ef43bc98db">
+        <source>Add new invoice</source>
+        <target>Aggiungi una nuova fattura proforma</target>
+      </trans-unit>
+      <trans-unit id="4497065ca1c74f9adea2e98809de2cc0">
+        <source>Add new payment</source>
+        <target>Aggiungi un nuovo pagamento</target>
+      </trans-unit>
+      <trans-unit id="0a86dddc699c7e6fe7f1e43153a5cbee">
+        <source>Advance</source>
+        <target>Anticipo</target>
+      </trans-unit>
+      <trans-unit id="b2f40690858b404ed10e62bdf422c704">
+        <source>Amount</source>
+        <target>Importo</target>
+      </trans-unit>
+      <trans-unit id="c95f2546851f0f6d1c529d530ad64b4b">
+        <source>Are you sure you want to delete this invoice?</source>
+        <target>Sei sicuro di voler cancellare questa fattura proforma?</target>
+      </trans-unit>
+      <trans-unit id="f1bb52dfffaa8fda990f4a90a7e405bd">
+        <source>Are you sure you want to delete this payment?</source>
+        <target>Sei sicuro di voler cancellare questo pagamento?</target>
+      </trans-unit>
+      <trans-unit id="729a51874fe901b092899e9e8b31c97a">
+        <source>Are you sure?</source>
+        <target>Sei sicuro?</target>
+      </trans-unit>
+      <trans-unit id="ea4788705e6873b424c65e91c2846b19">
+        <source>Cancel</source>
+        <target>Annulla</target>
+      </trans-unit>
+      <trans-unit id="cbe55e77ffa67d13322eb1ce7d22f1ba">
+        <source>Choose file</source>
+        <target>Scegli il file</target>
+      </trans-unit>
+      <trans-unit id="65395fa4f5ee2fced147c413f1ff13c2">
+        <source>Create new invoice</source>
+        <target>Nuova fattura proforma</target>
+      </trans-unit>
+      <trans-unit id="1f4a067061b065ca91b2b5baf13312d2">
+        <source>Create new payment</source>
+        <target>Nuovo pagamento cliente</target>
+      </trans-unit>
+      <trans-unit id="44749712dbec183e983dcd78a7736c41">
+        <source>Date</source>
+        <target>Data</target>
+      </trans-unit>
+      <trans-unit id="f2a6c498fb90ee345d997f888fce3b18">
+        <source>Delete</source>
+        <target>Cancella</target>
+      </trans-unit>
+      <trans-unit id="08a38277b0309070706f6652eeae9a53">
+        <source>Down</source>
+        <target>Saldo</target>
+      </trans-unit>
+      <trans-unit id="801ab24683a4a8c433c6eb40c48bcd9d">
+        <source>Download</source>
+        <target>Download</target>
+      </trans-unit>
+      <trans-unit id="7dce122004969d56ae2e0245cb754d35">
+        <source>Edit</source>
+        <target>Modifca</target>
+      </trans-unit>
+      <trans-unit id="6dda2f782bd6ed5ffa9a25e7a844efa2">
+        <source>Edit invoice</source>
+        <target>Modifica</target>
+      </trans-unit>
+      <trans-unit id="82360da7ba8bad34fd0940c65871bd5b">
+        <source>Edit payment</source>
+        <target>Modifica</target>
+      </trans-unit>
+      <trans-unit id="f8c8b903cb2e4f297e4b96d4b9c1e98a">
+        <source>Employee</source>
+        <target>Dipendente</target>
+      </trans-unit>
+      <trans-unit id="466eadd40b3c10580e3ab4e8061161ce">
+        <source>Invoice</source>
+        <target>Fattura</target>
+      </trans-unit>
+      <trans-unit id="9c5c7edf20a1f68ba2ed522fc1be5297">
+        <source>Invoice ID</source>
+        <target>Id Fattura proforma</target>
+      </trans-unit>
+      <trans-unit id="402abd5d3f8d26ba6e02c8319fb1c52f">
+        <source>Invoice date</source>
+        <target>Data fattura</target>
+      </trans-unit>
+      <trans-unit id="8ae4286d38bb2235def98fd68d7420d2">
+        <source>Invoice number</source>
+        <target>Numero fattura</target>
+      </trans-unit>
+      <trans-unit id="8e1a1081cbd3c0d16f1541bbf34535cd">
+        <source>Invoice total</source>
+        <target>Totale fattura</target>
+      </trans-unit>
+      <trans-unit id="fce9a6a1bd2a2050eb86d33103f46fd3">
+        <source>Invoices</source>
+        <target>Fatture proforma</target>
+      </trans-unit>
+      <trans-unit id="19f1b193cb31d66abde0634906db0054">
+        <source>Manage multiple payments for a single order and generate proforma invoices.</source>
+        <target>Manage multiple payments for a single order and generate proforma invoices.</target>
+      </trans-unit>
+      <trans-unit id="379d0aa1ebb17b44403a749478e7eea0">
+        <source>Multiple Order Payments</source>
+        <target>Multiple Order Payments</target>
+      </trans-unit>
+      <trans-unit id="8720809f82f32663a7450612c6a9cff9">
+        <source>New invoice</source>
+        <target>Nuova fattura proforma</target>
+      </trans-unit>
+      <trans-unit id="d304c853c515ea96a60b5ad81330bec7">
+        <source>New payment</source>
+        <target>Nuovo pagamento cliente</target>
+      </trans-unit>
+      <trans-unit id="bafd7322c6e97d25b6299b5d6fe8920b">
+        <source>No</source>
+        <target>No</target>
+      </trans-unit>
+      <trans-unit id="e21c3c406358073b38d481fd3d88221c">
+        <source>No invoices found</source>
+        <target>Nessuna fattura proforma trovata</target>
+      </trans-unit>
+      <trans-unit id="2eea44863604ec26204ae5b4d55f5ec3">
+        <source>No payments found</source>
+        <target>Nessun pagamento cliente trovato</target>
+      </trans-unit>
+      <trans-unit id="5b735a05605e4ae56a9204299b7613e7">
+        <source>Order Invoices</source>
+        <target>Fatture proforma</target>
+      </trans-unit>
+      <trans-unit id="2e8c4903b15df2fb25cf1f1bdf21b081">
+        <source>Order Payments</source>
+        <target>Pagamenti cliente</target>
+      </trans-unit>
+      <trans-unit id="7133d45d85f629f4c8abe0e1b3d37942">
+        <source>Payment date</source>
+        <target>Data pagamento</target>
+      </trans-unit>
+      <trans-unit id="3f393ca4bf7ffe7e4bdcec75015b4784">
+        <source>Payment document</source>
+        <target>Ricevuta pagamento</target>
+      </trans-unit>
+      <trans-unit id="f0aaaae189e9c7711931a65ffcd22543">
+        <source>Payment method</source>
+        <target>Metodo di pagamento</target>
+      </trans-unit>
+      <trans-unit id="0b8f0c09c020c7079eae810280952aee">
+        <source>Payment term</source>
+        <target>Termini di pagamento</target>
+      </trans-unit>
+      <trans-unit id="daef64964ee3b9b904f5d467586e217f">
+        <source>Payments</source>
+        <target>Pagamenti cliente</target>
+      </trans-unit>
+      <trans-unit id="37be07209f53a5d636d5c904ca9ae64c">
+        <source>Percentage</source>
+        <target>Percentuale</target>
+      </trans-unit>
+      <trans-unit id="5a1119ecb764165f27cb37b6f50134f2">
+        <source>Remaining</source>
+        <target>Rimanenti</target>
+      </trans-unit>
+      <trans-unit id="c9cc8cce247e49bae79f15173ce97354">
+        <source>Save</source>
+        <target>Salva</target>
+      </trans-unit>
+      <trans-unit id="b454fdf5dd9a695189336850ff49697e">
+        <source>There are some errors, please correct them and try again</source>
+        <target>Ci sono alcuni errori, per favore correggili e riprova</target>
+      </trans-unit>
+      <trans-unit id="96b0141273eabab320119c467cdcaf17">
+        <source>Total</source>
+        <target>Pagamento totale</target>
+      </trans-unit>
+      <trans-unit id="9aa23d769dbdd75f76fe02576bee050e">
+        <source>Total order</source>
+        <target>Totale ordine</target>
+      </trans-unit>
+      <trans-unit id="ea067eb37801c5aab1a1c685eb97d601">
+        <source>Total paid</source>
+        <target>Totale pagato</target>
+      </trans-unit>
+      <trans-unit id="8cc072b14a8fda0c4f9aa0c166471cc9">
+        <source>Total to pay</source>
+        <target>Totale fattura</target>
+      </trans-unit>
+      <trans-unit id="88427ec035734b45aae9f7d8859a5008">
+        <source>Transaction ID</source>
+        <target>Identificativo transazione</target>
+      </trans-unit>
+      <trans-unit id="93cba07454f06a4a960172bbd6e2a435">
+        <source>Yes</source>
+        <target>Sì</target>
+      </trans-unit>
+      <trans-unit id="e0bd4e89620ec924b27166975a2dda57">
+        <source>advance</source>
+        <target>advance</target>
+      </trans-unit>
+      <trans-unit id="5dd2199ad68327cc76d583b057aee7d5">
+        <source>card</source>
+        <target>Carta di credito</target>
+      </trans-unit>
+      <trans-unit id="93585797569d208d914078d513c8c55a">
+        <source>cash</source>
+        <target>Contanti</target>
+      </trans-unit>
+      <trans-unit id="74e8333ad11685ff3bdae589c8f6e34d">
+        <source>down</source>
+        <target>down</target>
+      </trans-unit>
+      <trans-unit id="a0a058baaeef16e88f6bd2ee36c03f6f">
+        <source>paypal</source>
+        <target>PayPal</target>
+      </trans-unit>
+      <trans-unit id="40fe79992d19b27463dbe0958a70af2e">
+        <source>satispay</source>
+        <target>Satispay</target>
+      </trans-unit>
+      <trans-unit id="fbb44b4487415b134bce9c790a27fe5e">
+        <source>total</source>
+        <target>total</target>
+      </trans-unit>
+      <trans-unit id="e0e14d8287ff2a2f34fe17b221422355">
+        <source>wirepayment</source>
+        <target>Bonifico Bancario</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

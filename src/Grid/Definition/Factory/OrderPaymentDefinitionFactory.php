@@ -136,6 +136,12 @@ final class OrderPaymentDefinitionFactory extends AbstractGridDefinitionFactory
                 ])
                 ->setAssociatedColumn('transaction_id')
             )
+            ->add((new Filter('invoice_number', TextType::class))
+                ->setTypeOptions([
+                    'required' => false,
+                ])
+                ->setAssociatedColumn('invoice_number')
+            )
             ->add(
                 (new Filter('actions', SearchAndResetType::class))
                     ->setTypeOptions([
