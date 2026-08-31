@@ -69,6 +69,9 @@ class OrderPaymentApi extends AbstractApi
             'download' => $this->translator->trans('Download', [], 'Modules.Orderpayments.Admin'),
             'invoice_date' => $this->translator->trans('Invoice date', [], 'Modules.Orderpayments.Admin'),
             'invoice_total' => $this->translator->trans('Invoice total', [], 'Modules.Orderpayments.Admin'),
+            'amount_type' => $this->translator->trans('Amount type', [], 'Modules.Orderpayments.Admin'),
+            'delivery_date' => $this->translator->trans('Delivery date', [], 'Modules.Orderpayments.Admin'),
+            'note' => $this->translator->trans('Note', [], 'Modules.Orderpayments.Admin'),
 
             'card' => $this->translator->trans('card', [], 'Modules.Orderpayments.Admin'),
             'paypal' => $this->translator->trans('paypal', [], 'Modules.Orderpayments.Admin'),

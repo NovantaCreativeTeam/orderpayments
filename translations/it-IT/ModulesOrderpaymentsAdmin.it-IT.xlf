@@ -18,6 +18,10 @@
         <source>Amount</source>
         <target>Importo</target>
       </trans-unit>
+      <trans-unit id="e77b842402971fefed4429c57b931373">
+        <source>Amount type</source>
+        <target>Tipo importo</target>
+      </trans-unit>
       <trans-unit id="c95f2546851f0f6d1c529d530ad64b4b">
         <source>Are you sure you want to delete this invoice?</source>
         <target>Sei sicuro di voler cancellare questa fattura proforma?</target>
@@ -53,6 +57,10 @@
       <trans-unit id="f2a6c498fb90ee345d997f888fce3b18">
         <source>Delete</source>
         <target>Cancella</target>
+      </trans-unit>
+      <trans-unit id="0c4f82ac8c388cb72b1ba684f10fa098">
+        <source>Delivery date</source>
+        <target>Data di consegna</target>
       </trans-unit>
       <trans-unit id="08a38277b0309070706f6652eeae9a53">
         <source>Down</source>
@@ -129,6 +137,10 @@
       <trans-unit id="2eea44863604ec26204ae5b4d55f5ec3">
         <source>No payments found</source>
         <target>Nessun pagamento cliente trovato</target>
+      </trans-unit>
+      <trans-unit id="3b0649c72650c313a357338dcdfb64ec">
+        <source>Note</source>
+        <target>Note</target>
       </trans-unit>
       <trans-unit id="5b735a05605e4ae56a9204299b7613e7">
         <source>Order Invoices</source>

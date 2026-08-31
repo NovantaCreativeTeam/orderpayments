@@ -13,7 +13,8 @@
         <div class="row">
           <div class="col-md-6">
             <PSSelect
-                label="Payment Method"
+                :label="trans('payment_method')"
+                name="payment_method"
                 v-model="formData.paymentMethod"
                 :items="availablePaymentMethods"
                 validationRules="required"
@@ -21,7 +22,8 @@
           </div>
           <div class="col-md-6">
             <PSSelect
-                label="Payment Term"
+                :label="trans('payment_term')"
+                name="payment_term"
                 v-model="formData.paymentTerm"
                 :items="availablePaymentTerms"
                 validationRules="required"
@@ -32,7 +34,8 @@
         <div class="row">
           <div class="col-md-6">
             <PSSelect
-                label="Amount Type"
+                :label="trans('amount_type')"
+                name="amount_type"
                 v-model="formData.amountType"
                 id="amount_type"
                 :items="amountTypeOptions"
@@ -41,7 +44,8 @@
           </div>
           <div class="col-md-6">
             <PSInput
-                label="Amount"
+                :label="trans('amount')"
+                name="amount"
                 type="number"
                 v-model="formData.amount"
                 v-if="formData.paymentTerm === 'advance' || formData.paymentTerm === 'down'"
@@ -49,19 +53,17 @@
           </div>
         </div>
 
-
-
-
-
         <PSDatepicker
-            label="Delivery Date"
+            :label="trans('delivery_date')"
+            name="delivery_date"
             v-model="formData.deliveryDate"
             id="delivery_date"
             validationRules="required"
         />
 
         <PsTextarea
-            label="Note"
+            :label="trans('note')"
+            name="note"
             type="textarea"
             v-model="formData.note"
         />
