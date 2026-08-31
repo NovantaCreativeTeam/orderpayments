@@ -1,5 +1,5 @@
 <template>
-  <div id="order-payment-container" class="container">
+  <div id="order-payment-container" class="container-fluid">
     <PSSpinner v-if="isLoading"/>
     <template v-else>
       <div class="row mb-3 payment-summary">
