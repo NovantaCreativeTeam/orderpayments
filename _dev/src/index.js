@@ -45,7 +45,12 @@ orderInvoicesApp.config.globalProperties.$filters = filters
 window.prestashop.customRoutes = customRoutes
 
 $(document).ready(function () {
-  store.dispatch('initialize');
+
+  window.prestashop.component.EventEmitter.on('PSComponentsInitiated', () => {
+    if(window.prestashop.instance.router) {
+      store.dispatch('initialize');
+    }
+  })
 
   orderPaymentApp.mount('#order-payments-app')
   $('#view_order_payments_block').remove()
