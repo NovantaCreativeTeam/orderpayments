@@ -200,7 +200,7 @@
       </trans-unit>
       <trans-unit id="e0bd4e89620ec924b27166975a2dda57">
         <source>advance</source>
-        <target>advance</target>
+        <target>Anticipo</target>
       </trans-unit>
       <trans-unit id="5dd2199ad68327cc76d583b057aee7d5">
         <source>card</source>
@@ -212,7 +212,7 @@
       </trans-unit>
       <trans-unit id="74e8333ad11685ff3bdae589c8f6e34d">
         <source>down</source>
-        <target>down</target>
+        <target>Saldo</target>
       </trans-unit>
       <trans-unit id="a0a058baaeef16e88f6bd2ee36c03f6f">
         <source>paypal</source>
@@ -224,7 +224,7 @@
       </trans-unit>
       <trans-unit id="fbb44b4487415b134bce9c790a27fe5e">
         <source>total</source>
-        <target>total</target>
+        <target>Pagamento totale</target>
       </trans-unit>
       <trans-unit id="e0e14d8287ff2a2f34fe17b221422355">
         <source>wirepayment</source>
