@@ -2,4 +2,4 @@
 .invalid-feedback:not(:empty){display:block}
 ﻿.date a[data-action=clear][data-v-6a555312]::before{font-family:"Material Icons";content:"";font-size:20px;position:absolute;bottom:15px;left:50%;margin-left:-10px;color:#363a41;cursor:pointer}.bootstrap-datetimepicker-widget tr td span[data-v-6a555312]:hover{background-color:#fff}
 .table td .form-group{margin-bottom:0}
-.payment-summary[data-v-1728464e]{background-color:#efefef;padding:1rem;border:1px solid}.actions[data-v-1728464e]{display:flex;align-items:center}.actions .add-payment[data-v-1728464e]{margin-left:auto}
+.payment-summary[data-v-7b37bed4]{background-color:#efefef;padding:1rem;border:1px solid}.actions[data-v-7b37bed4]{display:flex;align-items:center}.actions .add-payment[data-v-7b37bed4]{margin-left:auto}
