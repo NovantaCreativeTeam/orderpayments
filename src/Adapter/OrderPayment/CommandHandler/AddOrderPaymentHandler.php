@@ -84,9 +84,9 @@ class AddOrderPaymentHandler extends AbstractOrderHandler implements AddOrderPay
         $order->update();
 
         if (null !== $command->getOrderInvoiceId()) {
-            Db::getInstance()->execute('
+            $res = Db::getInstance()->execute('
             INSERT INTO `' . _DB_PREFIX_ . 'order_invoice_payment` (`id_order_invoice`, `id_order_payment`, `id_order`)
-            VALUES(' . (int) $command->getOrderInvoiceId() . ', ' . (int) $order_payment->id . ', ' . (int) $order_payment->id . ')');
+            VALUES(' . (int) $command->getOrderInvoiceId() . ', ' . (int) $order_payment->id . ', ' . (int) $order->id . ')');
         }
 
         if ($command->getFile()) {
