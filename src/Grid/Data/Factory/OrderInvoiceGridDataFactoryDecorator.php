@@ -80,13 +80,10 @@ final class OrderInvoiceGridDataFactoryDecorator implements GridDataFactoryInter
                 $orderInvoice['total_paid_badge_type'] = 'warning';
             }
 
-
-
             $orderInvoice['payment_method_formatted'] = $orderInvoice['payment_method'] ? $this->translator->trans(OrderInvoicePaymentMethod::tryFrom($orderInvoice['payment_method'])->value, [], 'Modules.Orderpayments.Admin')  : '';
+            $orderInvoice['payment_term_formatted'] = '';
 
             if($orderInvoice['payment_term']) {
-
-                $orderInvoice['payment_term_formatted'] = '';
                 if($orderInvoice['payment_term'] == OrderInvoicePaymentTerm::ADVANCE->value) {
                     $orderInvoice['payment_term_formatted'] .= ' - ' . $this->translator->trans('Advance', [], 'Modules.Orderpayments.Admin') . ' ' . $orderInvoice['amount'] . ' ' . ($orderInvoice['amount_type'] === 'percentage' ? '%' : $defaultCurrencyIso);
                 } elseif($orderInvoice['payment_term'] == OrderInvoicePaymentTerm::DOWN->value) {
