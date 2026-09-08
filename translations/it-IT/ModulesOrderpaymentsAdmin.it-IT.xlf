@@ -242,6 +242,10 @@
         <source>wirepayment</source>
         <target>Bonifico Bancario</target>
       </trans-unit>
+      <trans-unit id="4b03f11a661954cd5a6cf8c4be893d11">
+        <source>wirepayment_instant</source>
+        <target>Bonifico Bancario istantaneo</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
