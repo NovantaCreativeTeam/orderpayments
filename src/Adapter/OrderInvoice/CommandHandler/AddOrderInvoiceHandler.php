@@ -75,7 +75,7 @@ class AddOrderInvoiceHandler implements AddOrderInvoiceHandlerInterface
 
         $orderInvoice = new OrderInvoice();
         $orderInvoice->id_order = $order->id;
-        $orderInvoice->number = 0;
+        $orderInvoice->number = Order::getLastInvoiceNumber() + 1;
 
         $orderInvoice->total_discount_tax_excl = $order->total_discounts_tax_excl;
         $orderInvoice->total_discount_tax_incl = $order->total_discounts_tax_incl;
@@ -106,7 +106,8 @@ class AddOrderInvoiceHandler implements AddOrderInvoiceHandlerInterface
         
         // Impostazione del numero fattura se abilitate
         if ($this->configuration->get('PS_INVOICE')) {
-            $order->setLastInvoiceNumber($orderInvoice->id, $order->id_shop);
+            $order->invoice_number = $orderInvoice->number;
+            $order->update();
         }
 
         // Valorizzare la tabella order_invoice_proforma
@@ -184,6 +185,6 @@ class AddOrderInvoiceHandler implements AddOrderInvoiceHandlerInterface
             $localizedDescriptions
         ));
 
-        $this->orderInvoiceRepository->addOrderInvoiceDocument(new OrderInvoiceId((int)$orderInvoice->id_order), $documentId);
+        $this->orderInvoiceRepository->addOrderInvoiceDocument(new OrderInvoiceId((int)$orderInvoice->id), $documentId);
     }
 }

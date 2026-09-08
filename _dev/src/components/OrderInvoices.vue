@@ -31,7 +31,7 @@
               <a class="dropdown-item" @click="$refs.deleteModal.showModal(); orderInvoiceToDelete = invoice"><i
                   class="material-icons">delete</i> {{ trans('delete') }}</a>
             </div>
-            <a class="btn btn-link p-1" v-if="invoice.orderDocumentId" @click="downloadInvoice(invoice.id, invoice.orderDocumentId)"><i class="material-icons">download</i> {{ trans('download') }}</a>
+            <a class="btn btn-link p-1" v-if="invoice.orderDocumentId" @click="downloadInvoice(invoice.id, invoice.orderDocumentId)"><i class="material-icons">download</i></a>
           </td>
         </tr>
         <tr v-if="invoices.length === 0">
