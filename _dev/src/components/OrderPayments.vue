@@ -40,16 +40,16 @@
           <td>{{ payment.employee ? payment.employee.fullName : '---' }}</td>
           <td>{{ $filters.formatCurrency(payment.amount, summary.currencyIsoCode) }}</td>
           <td>
-            <a class="btn btn-link dropdown-toggle dropdown-toggle-dots dropdown-toggle-split no-rotate"
+            <a class="btn btn-link p-1 dropdown-toggle dropdown-toggle-dots dropdown-toggle-split no-rotate"
                data-toggle="dropdown"></a>
             <div class="ps-dropdown-menu dropdown-menu">
               <a class="dropdown-item" @click="openEditModal(payment)"><i class="material-icons">edit</i>
                 {{ trans('edit') }}</a>
               <a class="dropdown-item" @click="$refs.deleteModal.showModal(); orderPaymentToDelete = payment"><i
                   class="material-icons">delete</i> {{ trans('delete') }}</a>
-              <a class="dropdown-item" v-if="payment.documentId" @click="downloadDocument(payment.id, payment.documentId)"><i
-                  class="material-icons">download</i> {{ trans('download') }}</a>
             </div>
+            <a class="btn btn-link p-1" v-if="payment.documentId" @click="downloadDocument(payment.id, payment.documentId)"><i
+                class="material-icons">download</i></a>
           </td>
         </tr>
         <tr v-if="payments.length === 0">

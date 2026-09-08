@@ -23,15 +23,15 @@
           <td>{{ $filters.formatCurrency(invoice.totalToPay) }}</td>
           <td><span class="badge" :class="{ 'badge-danger': invoice.totalPaidTaxIncluded === 0, 'badge-success': invoice.totalPaidTaxIncluded === invoice.totalToPay, 'badge-warning': invoice.totalPaidTaxIncluded > 0 && invoice.totalPaidTaxIncluded !== invoice.totalToPay }">{{ $filters.formatCurrency(invoice.totalPaidTaxIncluded) }}</span></td>
           <td>
-            <a class="btn btn-link dropdown-toggle dropdown-toggle-dots dropdown-toggle-split no-rotate"
+            <a class="btn btn-link p-1 dropdown-toggle dropdown-toggle-dots dropdown-toggle-split no-rotate"
                data-toggle="dropdown"></a>
             <div class="ps-dropdown-menu dropdown-menu">
               <a class="dropdown-item" @click="openEditModal(invoice)"><i class="material-icons">edit</i>
                 {{ trans('edit') }}</a>
               <a class="dropdown-item" @click="$refs.deleteModal.showModal(); orderInvoiceToDelete = invoice"><i
                   class="material-icons">delete</i> {{ trans('delete') }}</a>
-              <a class="dropdown-item" v-if="invoice.orderDocumentId" @click="downloadInvoice(invoice.id, invoice.orderDocumentId)"><i class="material-icons">download</i> {{ trans('download') }}</a>
             </div>
+            <a class="btn btn-link p-1" v-if="invoice.orderDocumentId" @click="downloadInvoice(invoice.id, invoice.orderDocumentId)"><i class="material-icons">download</i> {{ trans('download') }}</a>
           </td>
         </tr>
         <tr v-if="invoices.length === 0">
