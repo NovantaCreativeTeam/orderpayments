@@ -6,6 +6,7 @@ use PrestaShop\PrestaShop\Core\Grid\Column\ColumnCollection;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\ActionColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\DataColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\DateTimeColumn;
+use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\HtmlColumn;
 use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\AbstractGridDefinitionFactory;
 use PrestaShop\PrestaShop\Core\Grid\Filter\Filter;
 use PrestaShop\PrestaShop\Core\Grid\Filter\FilterCollection;
@@ -43,6 +44,18 @@ final class OrderPaymentDefinitionFactory extends AbstractGridDefinitionFactory
                 ->setName($this->trans('Order', [], 'Admin.Global'))
                 ->setOptions([
                     'field' => 'order_reference',
+                ])
+            )
+            ->add((new DataColumn('customer'))
+                ->setName($this->trans('Customer', [], 'Admin.Global'))
+                ->setOptions([
+                    'field' => 'customer',
+                ])
+            )
+            ->add((new HtmlColumn('products'))
+                ->setName($this->trans('Products', [], 'Admin.Global'))
+                ->setOptions([
+                    'field' => 'products',
                 ])
             )
             ->add((new DateTimeColumn('date_add'))
@@ -123,6 +136,18 @@ final class OrderPaymentDefinitionFactory extends AbstractGridDefinitionFactory
                     'required' => false,
                 ])
                 ->setAssociatedColumn('order_reference')
+            )
+            ->add((new Filter('customer', TextType::class))
+                ->setTypeOptions([
+                    'required' => false,
+                ])
+                ->setAssociatedColumn('customer')
+            )
+            ->add((new Filter('products', TextType::class))
+                ->setTypeOptions([
+                    'required' => false,
+                ])
+                ->setAssociatedColumn('products')
             )
             ->add((new Filter('payment_method', TextType::class))
                 ->setTypeOptions([

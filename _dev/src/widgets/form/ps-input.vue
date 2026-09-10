@@ -8,9 +8,12 @@
           <div class="input-group-prepend" v-if="append">
             <span class="input-group-text">{{ append }}</span>
           </div>
-          <input v-bind="field" :type="type" class="form-control" :disabled="disabled" :id="id"
+          <input v-bind="field"
+                 class="form-control" :disabled="disabled" :id="id"
+                 :type="type === 'number' ? 'text' : type"
+                 :inputmode="type === 'number' ? 'decimal' : undefined"
                  @change="onChange"
-                 v-model="internalValue"
+                 @input="onInput"
                  :class="{
                         'is-valid': meta.valid && validationRules != null,
                         'is-invalid': meta.touched && !meta.valid,
@@ -68,12 +71,15 @@ export default {
   },
   data() {
     return {
-      internalValue: this.modelValue
+      internalValue: this.modelValue != null ? String(this.modelValue) : ''
     }
   },
   watch: {
     modelValue(newVal) {
-      this.internalValue = newVal;
+      const value = newVal != null ? String(newVal) : '';
+      if (value !== this.internalValue) {
+        this.internalValue = value;
+      }
     },
     internalValue(newVal) {
       this.$emit('update:modelValue', newVal);
@@ -81,7 +87,17 @@ export default {
   },
   methods: {
     onChange(event) {
-      this.$emit('change', event.currentTarget.value)
+      const value = event.currentTarget.value;
+
+      const parsedValue = this.type === 'number'
+          ? (value === '' ? null : Number(value.replace(',', '.')))
+          : value;
+
+      this.$emit('update:modelValue', parsedValue);
+      this.$emit('change', parsedValue);
+    },
+    onInput(event) {
+      this.internalValue = event.target.value
     }
   },
   components: {

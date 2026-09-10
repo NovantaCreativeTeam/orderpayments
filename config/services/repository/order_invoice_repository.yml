@@ -1,6 +1,7 @@
 services:
   Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository:
     class: Novanta\OrderPayment\Adapter\OrderInvoice\Repository\OrderInvoiceRepository
+    public: true
     arguments:
       - '@doctrine.dbal.default_connection'
       - '%database_prefix%'

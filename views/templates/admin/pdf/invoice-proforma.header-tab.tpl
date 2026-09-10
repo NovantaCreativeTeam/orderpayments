@@ -21,16 +21,32 @@
 <table>
     <tr>
         <td colspan="6">
+            {if $customer.delivery_address}
+            <table id="address-info" style="padding: 5px 10px">
+                <tbody>
+                <tr>
+                    <td>
+                        <strong>{l s="Delivery Address" d='Modules.Orderpayments.Pdf' pdf="true"}</strong><br/>
+                        {$customer.delivery_address.address1} {$customer.delivery_address.address2}<br/>
+                        {$customer.delivery_address.postcode} {$customer.delivery_address.city}<br/>
+                        {$customer.delivery_address.state_iso} {$customer.delivery_address.country}<br/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            {/if}
+        </td>
+        <td colspan="6">
             <table id="supplier-info" style="padding: 5px 10px">
                 <tbody>
                 <tr>
                     <td>
                         <strong>{l s="Spett.le" d='Modules.Orderpayments.Pdf' pdf="true"}</strong><br/>
-                        {if $customer.address.company}{$customer.address.company}{else}{$customer.firstname} {$customer.lastname}{/if}
+                        {if $customer.invoice_address.company}{$customer.invoice_address.company}{else}{$customer.firstname} {$customer.lastname}{/if}
                         <br/>
-                        {$customer.address.address1} {$customer.address.address2}<br/>
-                        {$customer.address.postcode} {$customer.address.city}<br/>
-                        {$customer.address.state_iso} {$customer.address.country}<br/>
+                        {$customer.invoice_address.address1} {$customer.invoice_address.address2}<br/>
+                        {$customer.invoice_address.postcode} {$customer.invoice_address.city}<br/>
+                        {$customer.invoice_address.state_iso} {$customer.invoice_address.country}<br/>
                     </td>
                 </tr>
                 </tbody>
@@ -62,13 +78,13 @@
                 </tr>
                 <tr>
                     <td colspan="3">{l s="Vat Number" d='Modules.Orderpayments.Pdf' pdf="true"}<br/>
-                        {$customer.address.vat_number}</td>
+                        {$customer.invoice_address.vat_number}</td>
                     <td colspan="3">{l s="Dni" d='Modules.Orderpayments.Pdf' pdf="true"}<br/>
-                        {$customer.address.dni}</td>
+                        {$customer.invoice_address.dni}</td>
                     <td colspan="3">{l s="Phone" d='Modules.Orderpayments.Pdf' pdf="true"}<br/>
-                        {$customer.address.phone}</td>
+                        {$customer.invoice_address.phone}</td>
                     <td colspan="3">{l s="Mobile Phone" d='Modules.Orderpayments.Pdf' pdf="true"}<br/>
-                        {$customer.address.phone_mobile}</td>
+                        {$customer.invoice_address.phone_mobile}</td>
                 </tr>
             </table>
         </td>

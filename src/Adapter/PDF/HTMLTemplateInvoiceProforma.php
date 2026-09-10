@@ -168,7 +168,8 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
                 'firstname' => $this->customer->firstname,
                 'lastname' => $this->customer->lastname,
                 'email' => $this->customer->email,
-                'address' => $this->order->id_address_invoice ? $this->customer->getSimpleAddress($this->order->id_address_invoice) : [],
+                'invoice_address' => $this->order->id_address_invoice ? $this->customer->getSimpleAddress($this->order->id_address_invoice) : [],
+                'delivery_address' => $this->order->id_address_delivery ? $this->customer->getSimpleAddress($this->order->id_address_delivery) : [],
             ],
         ]);
 

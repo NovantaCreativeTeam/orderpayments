@@ -64,6 +64,16 @@ final class OrderPaymentGridDataFactoryDecorator implements GridDataFactoryInter
                 $orderPayment['transaction_id'] = '---';
             }
 
+            if(!empty($orderPayment['products'])) {
+                $products = explode(',', $orderPayment['products']);
+                $orderPayment['products'] = '<ul style="padding-left: 10px;">';
+                foreach ($products as $product) {
+                    $orderPayment['products'] .= '<li>' . $product . '</li>';
+
+                }
+                $orderPayment['products'] .= '</ul>';
+            }
+
             $modifiedOrderPayments[] = $orderPayment;
         }
 
