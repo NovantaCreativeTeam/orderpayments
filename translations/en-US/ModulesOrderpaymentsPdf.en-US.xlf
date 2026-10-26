@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesOrderpaymentsPdf.xlf" source-language="en-US" target-language="en-US" datatype="plaintext">
+    <body>
+      <trans-unit id="9fec2102dd0b5b29d6cdf9d5614fabf7">
+        <source>(Tax excl.)</source>
+        <target>(VAT excl.)</target>
+      </trans-unit>
+      <trans-unit id="0303a43b7b30185913b9201fae16296d">
+        <source>Bankwire Address</source>
+        <target>Bankwire Address</target>
+      </trans-unit>
+      <trans-unit id="c1c35342282a7cf157922927f3ab8fcb">
+        <source>Bankwire Details</source>
+        <target>Bankwire Details</target>
+      </trans-unit>
+      <trans-unit id="da22bbe0e5257dd177e31437b312d28a">
+        <source>Bankwire Owner</source>
+        <target>Bankwire Owner</target>
+      </trans-unit>
+      <trans-unit id="2fb34114d8ed45c62b8c16d374ed9fff">
+        <source>Be sure to enter the payee's name exactly as shown to avoid any rejection by the bank.</source>
+        <target>Be sure to enter the payee's name exactly as shown to avoid any rejection by the bank.</target>
+      </trans-unit>
+      <trans-unit id="2f2f0f119a907c6c67a3c6fcde0193ab">
+        <source>Delivery Address</source>
+        <target>Delivery Address</target>
+      </trans-unit>
+      <trans-unit id="9d5bf15117441a1b52eb1f0808e4aad3">
+        <source>Discounts</source>
+        <target>Discounts</target>
+      </trans-unit>
+      <trans-unit id="508396a768b71eb8582aca5334046192">
+        <source>Dni</source>
+        <target>Dni</target>
+      </trans-unit>
+      <trans-unit id="6adebfec4eb665d7e734b17eb6c3faf8">
+        <source>Document Date</source>
+        <target>Document Date</target>
+      </trans-unit>
+      <trans-unit id="8f75e3041034138aba310ba3f097ed24">
+        <source>Document Number</source>
+        <target>Document Number</target>
+      </trans-unit>
+      <trans-unit id="5020eaae41baf0caa37bcb73b4a12934">
+        <source>Mobile Phone</source>
+        <target>Mobile Phone</target>
+      </trans-unit>
+      <trans-unit id="5d4710f9a8250b13164a82c94d5b00d1">
+        <source>Order reference</source>
+        <target>Order reference</target>
+      </trans-unit>
+      <trans-unit id="b86ad25f90a4041103d71dbb09493f43">
+        <source>Payment Instruction</source>
+        <target>Payment Instruction</target>
+      </trans-unit>
+      <trans-unit id="707436a5aa13b82a4d777f64c717a625">
+        <source>Payment Method</source>
+        <target>Payment Method</target>
+      </trans-unit>
+      <trans-unit id="aa9197f2f967c5f4835370031aebf17e">
+        <source>Payment Term</source>
+        <target>Payment Term</target>
+      </trans-unit>
+      <trans-unit id="961b9a68822e8a47a046b0ef80bb8196">
+        <source>Payment description</source>
+        <target>Payment description</target>
+      </trans-unit>
+      <trans-unit id="bcc254b55c4a1babdf1dcb82c207506b">
+        <source>Phone</source>
+        <target>Phone</target>
+      </trans-unit>
+      <trans-unit id="139b5a92de5ca231b8c4fe3ce0596410">
+        <source>Please enter the offer number as the PAYMENT REASON</source>
+        <target>Please enter the offer number as the PAYMENT REASON</target>
+      </trans-unit>
+      <trans-unit id="3601146c4e948c32b6424d2c0a7f0118">
+        <source>Price</source>
+        <target>Price</target>
+      </trans-unit>
+      <trans-unit id="deb10517653c255364175796ace3553f">
+        <source>Product</source>
+        <target>Product</target>
+      </trans-unit>
+      <trans-unit id="068f80c7519d0528fb08e82137a72131">
+        <source>Products</source>
+        <target>Products</target>
+      </trans-unit>
+      <trans-unit id="b1f1b0baae34f704dba6ffd04509f852">
+        <source>Proforma Invoice</source>
+        <target>Proforma Invoice</target>
+      </trans-unit>
+      <trans-unit id="03ab340b3f99e03cff9e84314ead38c0">
+        <source>Qty</source>
+        <target>Qty</target>
+      </trans-unit>
+      <trans-unit id="63d5049791d9d79d86e9a108b0a999ca">
+        <source>Reference</source>
+        <target>Reference</target>
+      </trans-unit>
+      <trans-unit id="ea9cf7e47ff33b2be14e6dd07cbcefc6">
+        <source>Shipping</source>
+        <target>Shipping</target>
+      </trans-unit>
+      <trans-unit id="364091890c3fedebd89db36740492475">
+        <source>Spett.le</source>
+        <target>Spett.le</target>
+      </trans-unit>
+      <trans-unit id="4b78ac8eb158840e9638a3aeb26c4a9d">
+        <source>Tax</source>
+        <target>VAT</target>
+      </trans-unit>
+      <trans-unit id="617fe2857b30555c036a380e07ce16e3">
+        <source>Tax amount</source>
+        <target>VAT amount</target>
+      </trans-unit>
+      <trans-unit id="befcac0f9644a7abee43e69f49252ac4">
+        <source>Tax excluded</source>
+        <target>VAT excluded</target>
+      </trans-unit>
+      <trans-unit id="f4a0d7cb0cd45214c8ca5912c970de13">
+        <source>Tax included</source>
+        <target>VAT included</target>
+      </trans-unit>
+      <trans-unit id="96b0141273eabab320119c467cdcaf17">
+        <source>Total</source>
+        <target>Total</target>
+      </trans-unit>
+      <trans-unit id="d271ee6cb1b8e0ac3c6141393e77e9f0">
+        <source>Total to Pay</source>
+        <target>Total to Pay</target>
+      </trans-unit>
+      <trans-unit id="5b4848ac60ff06ac343e5e36f7cf4157">
+        <source>Vat Number</source>
+        <target>Vat Number</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

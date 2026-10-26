@@ -40,6 +40,12 @@
 	</tr>
 
 	<tr>
+		<td colspan="12">
+			{$total_tab}
+		</td>
+	</tr>
+
+	<tr>
 		<td colspan="12" height="20">&nbsp;</td>
 	</tr>
 

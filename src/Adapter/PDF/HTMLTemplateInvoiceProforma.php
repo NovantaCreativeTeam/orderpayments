@@ -74,10 +74,12 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
         $contextLocale = Tools::getContextLocale($this->context);
         $currencyIsoCode = Currency::getIsoCodeById((int)$this->context->currency->id);
 
-        // Filter only requested products
         $products = [];
         $total_tax_excl = 0;
         $total_taxes = 0;
+        $products_tax_excl = 0;
+        $products_taxes = 0;
+        $tax_rate = 0;
 
         $address = new Address($this->order->id_address_invoice);
         if (!Validate::isLoadedObject($address)) {
@@ -98,20 +100,52 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
 
             if ($tax_calculator instanceof TaxCalculator) {
                 $line_taxes = $tax_calculator->getTaxesTotalAmount($orderDetail['total_price_tax_excl']);
+                $tax_rate = $tax_calculator->getTotalRate();
             }
 
+            $products_tax_excl += $orderDetail['total_price_tax_excl'];
+            $products_taxes += $line_taxes;
             $total_tax_excl += $orderDetail['total_price_tax_excl'];
             $total_taxes += $line_taxes;
 
             $products[] = [
                 'name' => $orderDetail['product_name'],
-                'reference' => !empty($productSupplierData) && array_key_exists('product_supplier_reference', $productSupplierData) ? $productSupplierData['product_supplier_reference'] : $orderDetail['product_reference'],
+                'reference' => !empty($orderDetail['product_supplier_reference']) ? $orderDetail['product_supplier_reference'] : $orderDetail['product_reference'],
                 'unit_price' => $contextLocale->formatPrice($orderDetail['unit_price_tax_excl'], $currencyIsoCode),
                 'full_price' => $contextLocale->formatPrice($orderDetail['total_price_tax_excl'], $currencyIsoCode),
                 'quantity' => $quantity,
                 'tax_rate' => $tax_calculator->getTotalRate()
             ];
         }
+
+        $cart_rules = $this->order->getCartRules();
+        $free_shipping = false;
+        foreach ($cart_rules as $cart_rule) {
+            if ($cart_rule['free_shipping']) {
+                $free_shipping = true;
+                break;
+            }
+        }
+
+        $shipping_tax_excl = (float)$this->orderInvoice['total_shipping_tax_excl'];
+        $shipping_tax_incl = (float)$this->orderInvoice['total_shipping_tax_incl'];
+        $shipping_taxes = $shipping_tax_incl - $shipping_tax_excl;
+
+        $discount_tax_excl = (float)$this->orderInvoice['total_discount_tax_excl'];
+        $discount_tax_incl = (float)$this->orderInvoice['total_discount_tax_incl'];
+
+        if ($free_shipping) {
+            $shipping_tax_excl = 0;
+            $shipping_tax_incl = 0;
+            $shipping_taxes = 0;
+            // Adjust discount to remove shipping part if free shipping is active, 
+            // similar to HTMLTemplateInvoiceCore logic.
+            $discount_tax_excl -= (float)$this->orderInvoice['total_shipping_tax_excl'];
+            $discount_tax_incl -= (float)$this->orderInvoice['total_shipping_tax_incl'];
+        }
+
+        $total_tax_excl += $shipping_tax_excl - $discount_tax_excl;
+        $total_taxes += $shipping_taxes - ($discount_tax_incl - $discount_tax_excl);
 
         $total_to_pay = $total_tax_excl + $total_taxes;
         if($this->orderInvoice['payment_term'] !== \Novanta\OrderPayment\Domain\OrderInvoice\OrderInvoicePaymentTerm::TOTAL->value) {
@@ -157,7 +191,17 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
                 'tax_excluded' => $contextLocale->formatPrice($total_tax_excl, $currencyIsoCode),
                 'tax_included' => $contextLocale->formatPrice($total_tax_excl + $total_taxes, $currencyIsoCode),
                 'total_taxes' => $contextLocale->formatPrice($total_taxes, $currencyIsoCode),
-                'total_to_pay' => $contextLocale->formatPrice($total_to_pay, $currencyIsoCode)
+                'total_to_pay' => $contextLocale->formatPrice($total_to_pay, $currencyIsoCode),
+                'products_tax_excl' => $contextLocale->formatPrice($products_tax_excl, $currencyIsoCode),
+                'products_tax_incl' => $contextLocale->formatPrice($products_tax_excl + $products_taxes, $currencyIsoCode),
+                'shipping_tax_excl' => $contextLocale->formatPrice($shipping_tax_excl, $currencyIsoCode),
+                'shipping_tax_incl' => $contextLocale->formatPrice($shipping_tax_incl, $currencyIsoCode),
+                'shipping_amount' => $shipping_tax_incl,
+                'discount_tax_excl' => $contextLocale->formatPrice($discount_tax_excl, $currencyIsoCode),
+                'discount_tax_incl' => $contextLocale->formatPrice($discount_tax_incl, $currencyIsoCode),
+                'discount_amount' => $discount_tax_incl,
+                'tax_rate' => $tax_rate,
+                'free_shipping' => $free_shipping,
             ],
             'order' => [
                 'reference' => $this->order->reference,
@@ -178,6 +222,7 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
             'style_tab' => $this->smarty->fetch($this->getTemplate('invoice-proforma.style-tab')),
             'header_tab' => $this->smarty->fetch($this->getTemplate('invoice-proforma.header-tab')),
             'product_tab' => $this->smarty->fetch($this->getTemplate('invoice-proforma.product-tab')),
+            'total_tab' => $this->smarty->fetch($this->getTemplate('invoice-proforma.total-tab')),
             'footer_tab' => $this->smarty->fetch($this->getTemplate('invoice-proforma.footer-tab')),
         ];
 
