@@ -164,7 +164,6 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
         }
 
 
-
         $orderInvoiceObj = new OrderInvoice($this->orderInvoice['id_order_invoice']);
 
         // Assign variables to template
@@ -214,7 +213,7 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
                 'email' => $this->customer->email,
                 'invoice_address' => $this->order->id_address_invoice ? $this->customer->getSimpleAddress($this->order->id_address_invoice) : [],
                 'delivery_address' => $this->order->id_address_delivery ? $this->customer->getSimpleAddress($this->order->id_address_delivery) : [],
-            ],
+            ]
         ]);
 
         // Load template parts

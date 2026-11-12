@@ -23,9 +23,38 @@
 		<h3>{l s='Payment Instruction' d='Modules.Orderpayments.Pdf' pdf='true'}</h3>
 
 		<p>
-			{l s='Be sure to enter the payee\'s name exactly as shown to avoid any rejection by the bank.' d='Modules.Orderpayments.Pdf' pdf='true'}<br/>
-			{l s='Please enter the offer number as the PAYMENT REASON' d='Modules.Orderpayments.Pdf' pdf='true'}</p>
+			{l s='Be sure to enter the payee\'s name exactly as shown to avoid any rejection by the bank.' d='Modules.Orderpayments.Pdf' pdf='true'}</p>
 
-		<p>{l s='Payment description' d='Modules.Orderpayments.Pdf' pdf='true'}: {$invoice.payment_description}</p>
+		{if $invoice.payment_method == 'wirepayment' or $invoice.payment_method == 'wirepayment_instant'}
+		<table id="bakwire_payment">
+			<tbody>
+			<tr>
+				<td><table style="padding:10px">
+						<tbody>
+						<tr>
+							<td colspan="4" style="border-bottom: 0.5pt solid #f1f1f1;">{l s='Bankwire Owner' d='Modules.Orderpayments.Pdf' pdf='true'}</td>
+							<td colspan="8" style="border-bottom: 0.5pt solid #f1f1f1">{$invoice.bankwire_owner}</td>
+						</tr>
+						<tr>
+							<td colspan="4" style="border-bottom: 0.5pt solid #f1f1f1">{l s='Bankwire Details' d='Modules.Orderpayments.Pdf' pdf='true'}</td>
+							<td colspan="8" style="border-bottom: 0.5pt solid #f1f1f1">{$invoice.bankwire_details}</td>
+						</tr>
+						<tr>
+							<td colspan="4" style="border-bottom: 0.5pt solid #f1f1f1">{l s='Bankwire Address' d='Modules.Orderpayments.Pdf' pdf='true'}</td>
+							<td colspan="8" style="border-bottom: 0.5pt solid #f1f1f1">{$invoice.bankwire_address}</td>
+						</tr>
+						<tr>
+							<td colspan="4">{l s='Causal' d='Modules.Orderpayments.Pdf' pdf='true'}</td>
+							<td colspan="8">{$invoice.payment_description}</td>
+						</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		{else}
+			<p>{l s='Please enter the offer number as the PAYMENT REASON' d='Modules.Orderpayments.Pdf' pdf='true'}.<br/>{l s='Payment description' d='Modules.Orderpayments.Pdf' pdf='true'}: {$invoice.payment_description}</p>
+		{/if}
 	</td>
 </tr>
