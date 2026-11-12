@@ -90,23 +90,13 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
 
             $quantity = (int)$orderDetail['product_quantity'];
 
-            // Calculate taxes for this line using store default taxes
-            $product = new Product($orderDetail['product_id']);
-            $id_tax_rules_group = $product->getIdTaxRulesGroup();
-            $tax_manager = TaxManagerFactory::getManager($address, $id_tax_rules_group);
-            $tax_calculator = $tax_manager->getTaxCalculator();
-
-            $line_taxes = 0;
-
-            if ($tax_calculator instanceof TaxCalculator) {
-                $line_taxes = $tax_calculator->getTaxesTotalAmount($orderDetail['total_price_tax_excl']);
-                $tax_rate = $tax_calculator->getTotalRate();
-            }
-
             $products_tax_excl += $orderDetail['total_price_tax_excl'];
-            $products_taxes += $line_taxes;
+            $products_taxes += $orderDetail['total_price_tax_incl'] - $orderDetail['total_price_tax_excl'];
+
             $total_tax_excl += $orderDetail['total_price_tax_excl'];
-            $total_taxes += $line_taxes;
+            $total_taxes += $orderDetail['total_price_tax_incl'] - $orderDetail['total_price_tax_excl'];
+
+            $tax_rate = (($orderDetail['total_price_tax_incl'] -  $orderDetail['total_price_tax_excl']) / $orderDetail['total_price_tax_excl']) * 100;
 
             $products[] = [
                 'name' => $orderDetail['product_name'],
@@ -114,7 +104,7 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
                 'unit_price' => $contextLocale->formatPrice($orderDetail['unit_price_tax_excl'], $currencyIsoCode),
                 'full_price' => $contextLocale->formatPrice($orderDetail['total_price_tax_excl'], $currencyIsoCode),
                 'quantity' => $quantity,
-                'tax_rate' => $tax_calculator->getTotalRate()
+                'tax_rate' => $tax_rate
             ];
         }
 
