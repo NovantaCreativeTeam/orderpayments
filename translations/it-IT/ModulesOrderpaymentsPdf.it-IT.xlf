@@ -22,6 +22,10 @@
         <source>Be sure to enter the payee's name exactly as shown to avoid any rejection by the bank.</source>
         <target>Assicuratevi di inserire il nome del beneficiario esattamente come indicato, per evitare un eventuale rifiuto da parte della banca. </target>
       </trans-unit>
+      <trans-unit id="376ddc595b141a7db7798145e4b6b286">
+        <source>Causal</source>
+        <target>Causale</target>
+      </trans-unit>
       <trans-unit id="2f2f0f119a907c6c67a3c6fcde0193ab">
         <source>Delivery Address</source>
         <target>Indirizzo di consegna</target>
