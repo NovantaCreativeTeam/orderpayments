@@ -201,8 +201,8 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
                 'firstname' => $this->customer->firstname,
                 'lastname' => $this->customer->lastname,
                 'email' => $this->customer->email,
-                'invoice_address' => $this->order->id_address_invoice ? $this->customer->getSimpleAddress($this->order->id_address_invoice) : [],
-                'delivery_address' => $this->order->id_address_delivery ? $this->customer->getSimpleAddress($this->order->id_address_delivery) : [],
+                'invoice_address' => $this->order->id_address_invoice ? $this->getSimpleAddress($this->order->id_address_invoice) : [],
+                'delivery_address' => $this->order->id_address_delivery ? $this->getSimpleAddress($this->order->id_address_delivery) : [],
             ]
         ]);
 
@@ -298,6 +298,74 @@ class HTMLTemplateInvoiceProforma extends HTMLTemplate
         }
 
         return $order;
+    }
+
+    protected function getSimpleAddress($idAddress, $idLang = null) {
+        if (!(int) $idAddress || !$idAddress) {
+            return [
+                'id' => '',
+                'alias' => '',
+                'firstname' => '',
+                'lastname' => '',
+                'company' => '',
+                'address1' => '',
+                'address2' => '',
+                'postcode' => '',
+                'city' => '',
+                'id_state' => '',
+                'state' => '',
+                'state_iso' => '',
+                'id_country' => '',
+                'country' => '',
+                'country_iso' => '',
+                'other' => '',
+                'phone' => '',
+                'phone_mobile' => '',
+                'vat_number' => '',
+                'dni' => '',
+            ];
+        }
+
+        if (null === $idLang) {
+            $idLang = Context::getContext()->language->id;
+        }
+
+        $sql = 'SELECT DISTINCT
+                      a.`id_address` AS `id`,
+                      a.`alias`,
+                      a.`firstname`,
+                      a.`lastname`,
+                      a.`company`,
+                      a.`address1`,
+                      a.`address2`,
+                      a.`postcode`,
+                      a.`city`,
+                      a.`id_state`,
+                      s.name AS state,
+                      s.`iso_code` AS state_iso,
+                      a.`id_country`,
+                      cl.`name` AS country,
+                      co.`iso_code` AS country_iso,
+                      a.`other`,
+                      a.`phone`,
+                      a.`phone_mobile`,
+                      a.`vat_number`,
+                      a.`dni`
+                    FROM `' . _DB_PREFIX_ . 'address` a
+                    LEFT JOIN `' . _DB_PREFIX_ . 'country` co ON (a.`id_country` = co.`id_country`)
+                    LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl ON (co.`id_country` = cl.`id_country`)
+                    LEFT JOIN `' . _DB_PREFIX_ . 'state` s ON (s.`id_state` = a.`id_state`)
+                    ' . Shop::addSqlAssociation('country', 'co') . '
+                    WHERE
+                        `id_lang` = ' . (int) $idLang . '
+                        AND a.`id_address` = ' . (int) $idAddress;
+
+        $res = Db::getInstance()->executeS($sql);
+        if (count($res) === 1) {
+            return $res[0];
+        } else {
+            return $res;
+        }
     }
 
 
